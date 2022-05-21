@@ -9,3 +9,7 @@ type Relation struct {
 func (r *Relation) TableName() string {
 	return "relation"
 }
+
+func CreateRelation(r *Relation) error {
+	return DB.Create(r).Error
+}

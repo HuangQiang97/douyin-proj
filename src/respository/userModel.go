@@ -7,11 +7,11 @@ import (
 )
 
 type User struct {
-	gorm.Model
+	ID          uint   `gorm:"primarykey"`
 	UserName    string `json:"user_name" gorm:"unique"`
 	Password    string `json:"password"`
-	FollowCount uint   `json:"follow_count" gorm:"default:0"`
-	FansCount   uint   `json:"fans_count" gorm:"default:0"`
+	FollowCount uint64 `json:"follow_count" gorm:"default:0"`
+	FansCount   uint64 `json:"fans_count" gorm:"default:0"`
 }
 
 func (u *User) TableName() string {

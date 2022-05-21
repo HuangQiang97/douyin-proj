@@ -1,16 +1,14 @@
 package respository
 
-import "time"
-
 type Video struct {
 	ID            uint `gorm:"primarykey"`
 	AuthorID      uint
 	PlayUrl       string
 	CoverUrl      string
-	FavoriteCount int64
-	CommentCount  int64
+	FavoriteCount uint64
+	CommentCount  uint64
 	Title         string
-	CreatedAt     time.Time
+	CreatedAt     uint64
 }
 
 func (v *Video) TableName() string {
