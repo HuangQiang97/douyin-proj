@@ -5,6 +5,14 @@ type Response struct {
 	StatusMsg  string `json:"status_msg,omitempty"`
 }
 
+func NewResponse(code int32, msg string) Response {
+	return Response{code, msg}
+}
+
+func (r *Response) WithStatusMsg(str string) {
+	r.StatusMsg = str
+}
+
 type User struct {
 	Id            int64  `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`

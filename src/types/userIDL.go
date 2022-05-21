@@ -1,9 +1,8 @@
 package types
 
-type UserRegisterResponse struct {
-	Response
-	UserId int64  `json:"user_id,omitempty"`
-	Token  string `json:"token"`
+type UserLoginRequest struct {
+	UserName string `form:"username" json:"username" binding:"required,max=30"`
+	Password string `form:"password" json:"password" binding:"required,min=6,max=30"`
 }
 
 type UserLoginResponse struct {
