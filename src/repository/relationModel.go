@@ -1,4 +1,4 @@
-package respository
+package repository
 
 type Relation struct {
 	ID       uint `gorm:"primarykey"`

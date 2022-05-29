@@ -3,7 +3,7 @@ package main
 import (
 	"douyin-proj/src/config"
 	"douyin-proj/src/database"
-	"douyin-proj/src/respository"
+	"douyin-proj/src/repository"
 	"douyin-proj/src/server"
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +26,6 @@ func Init() error {
 	if err := database.Init(); err != nil {
 		return err
 	}
-	respository.Init()
+	repository.Init()
 	return nil
 }

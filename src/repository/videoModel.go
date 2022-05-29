@@ -1,4 +1,4 @@
-package respository
+package repository
 
 type Video struct {
 	ID            uint `gorm:"primarykey"`

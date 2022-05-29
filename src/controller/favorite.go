@@ -2,7 +2,7 @@ package controller
 
 import (
 	"douyin-proj/src/global/ErrNo"
-	"douyin-proj/src/respository"
+	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -26,14 +26,14 @@ func FavoriteAction(c *gin.Context) {
 	// 	return
 	// }
 
-	f := respository.Favorite{
+	f := repository.Favorite{
 		UserID:  favoriteRequest.UserId,
 		VideoID: favoriteRequest.VideoId,
 	}
 
 	switch favoriteRequest.ActionType {
 	case 1: // do favorite
-		if err := respository.CreateFavorite(&f); err != nil {
+		if err := repository.CreateFavorite(&f); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
 				Response: ErrNo.DuplicateFavoriteResp,
 			})
@@ -45,7 +45,7 @@ func FavoriteAction(c *gin.Context) {
 			return
 		}
 	case 2: // undo favorite
-		if err := respository.UndoFavorite(&f); err != nil {
+		if err := repository.UndoFavorite(&f); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
 				Response: ErrNo.NotInFavoriteResp,
 			})

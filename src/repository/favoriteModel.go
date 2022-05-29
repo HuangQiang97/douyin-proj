@@ -1,4 +1,4 @@
-package respository
+package repository
 
 type Favorite struct {
 	UserID  uint `gorm:"primarykey"`
