@@ -12,8 +12,8 @@ type FavoriteResponse struct {
 }
 
 type FavoriteListRequest struct {
-	UserId int64  `json:"user_id,omitempty"  binding:"required"`
-	Token  string `json:"token"  binding:"required"`
+	UserId uint   `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
 }
 
 type FavoriteListResponse struct {
