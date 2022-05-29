@@ -25,4 +25,5 @@ var (
 	DuplicateFavoriteResp = types.Response{StatusCode: DuplicateFavorite, StatusMsg: "Duplicate favorite!"}
 	NotInFavoriteResp     = types.Response{StatusCode: NotInFavorite, StatusMsg: "Not in favorite list!"}
 	UnknownErrorResp      = types.Response{StatusCode: UnknownError, StatusMsg: "Unknown error!"}
+	AuthFailedResp      = types.Response{StatusCode: AuthFailed, StatusMsg: "token is invalid"}
 )

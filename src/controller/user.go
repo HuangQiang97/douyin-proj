@@ -3,6 +3,7 @@ package controller
 import (
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/global/util"
+	"douyin-proj/src/repository"
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,7 @@ func Register(c *gin.Context) {
 	var userRegisterRequest = types.UserLoginRequest{}
 	if err := c.ShouldBind(&userRegisterRequest); err != nil {
 		c.JSON(http.StatusOK, types.UserLoginResponse{
-			Response: types.Response{StatusCode: 2, StatusMsg: err.Error()},
+			Response: ErrNo.ParamInvalidResp,
 			Token:    "",
 		})
 		return
@@ -27,6 +28,16 @@ func Register(c *gin.Context) {
 	//	})
 	//	return
 	//}
+	// user is existed
+	userExisted, err := repository.GetUserByName(userRegisterRequest.UserName)
+	if userExisted != nil {
+		c.JSON(http.StatusOK, types.UserLoginResponse{
+			Response:ErrNo.UserHasExistedResp,
+			Token: "",
+		})
+		return
+	}
+
 	id, err := service.CreateUser(userRegisterRequest.UserName, userRegisterRequest.Password)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserLoginResponse{
@@ -45,7 +56,7 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, types.UserLoginResponse{
-		Response: types.Response{StatusCode: 0, StatusMsg: "success"},
+		Response: ErrNo.SuccessResp,
 		UserId:   int64(id),
 		Token:    token,
 	})
@@ -63,7 +74,6 @@ func Login(c *gin.Context) {
 
 	//username := c.Query("username")
 	//password := c.Query("password")
-
 	id, err := service.CheckUser(userLoginRequest.UserName, userLoginRequest.Password)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserLoginResponse{
@@ -83,12 +93,54 @@ func Login(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, types.UserLoginResponse{
-		Response: types.Response{StatusCode: 0, StatusMsg: "success"},
+		Response: ErrNo.SuccessResp,
 		UserId:   int64(id),
 		Token:    token,
 	})
 }
 
 func UserInfo(c *gin.Context) {
+	var userInfoRequest =  types.UserInfoRequest{}
+	if err := c.ShouldBind(&userInfoRequest); err != nil {
+		c.JSON(http.StatusOK, types.FavoriteListResponse{
+			Response: ErrNo.ParamInvalidResp,
+		})
+		return
+	}
+	uId, err := util.VerifyToken(userInfoRequest.Token)
+	if err != nil{
+		c.JSON(http.StatusOK, types.UserResponse{
+			Response: ErrNo.AuthFailedResp,
+			User: types.User{},
+		})
+		return
+	}
+	user, err := repository.GetUserById(uId)
+	if err != nil{
+		c.JSON(http.StatusOK, types.UserResponse{
+			Response: types.Response{StatusCode: 4, StatusMsg: err.Error()},
+			User: types.User{},
+		})
+	}
+	if user == nil{
+		c.JSON(http.StatusOK, types.UserResponse{
+			Response: types.Response{StatusCode: 4, StatusMsg: "user id is unvalid"},
+			User: types.User{} ,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, types.UserResponse{
+		Response: ErrNo.SuccessResp,
+		User: types.User{
+			Id: user.ID,
+			Name: user.UserName,
+			FollowCount: user.FollowCount,
+			FollowerCount: user.FansCount,
+			IsFollow: false, // todo: follow 关系查询
+		},
+	})
+
+
+
 
 }

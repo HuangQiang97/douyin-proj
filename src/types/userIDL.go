@@ -15,3 +15,8 @@ type UserResponse struct {
 	Response
 	User User `json:"user"`
 }
+
+type UserInfoRequest struct {
+	UserId uint   `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
+}
