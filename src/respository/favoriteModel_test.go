@@ -28,3 +28,20 @@ func TestDuplicateCreateFavorite(t *testing.T) {
 		return
 	}
 }
+
+func TestUndoFavorite(t *testing.T) {
+	f := Favorite{
+		UserID:  3,
+		VideoID: 9,
+	}
+	if err := CreateFavorite(&f); err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log("insert favorite success")
+	if err := UndoFavorite(&f); err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log("undo favorite success")
+}

@@ -12,3 +12,7 @@ func (f *Favorite) TableName() string {
 func CreateFavorite(f *Favorite) error {
 	return DB.Create(f).Error
 }
+
+func UndoFavorite(f *Favorite) error {
+	return DB.Delete(f).Error
+}
