@@ -2,6 +2,7 @@ package controller
 
 import (
 	"douyin-proj/src/global/ErrNo"
+	"douyin-proj/src/global/util"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 
 // FavoriteAction mark a video as favorite (action_type == 1) or undo it (action_type == 2)
 func FavoriteAction(c *gin.Context) {
+	// parse parameters
 	var favoriteRequest = types.FavoriteRequest{}
 	if err := c.ShouldBind(&favoriteRequest); err != nil {
 		c.JSON(http.StatusOK, types.FavoriteResponse{
@@ -19,13 +21,19 @@ func FavoriteAction(c *gin.Context) {
 		return
 	}
 
-	// TODO: check token
-	// if _, err := util.VerifyToken(favoriteRequest.Token); err != nil {
-	// 	c.JSON(http.StatusOK, types.FavoriteResponse{
-	// 		Response: ErrNo.NotSignedInResp,
-	// 	})
-	// 	return
-	// }
+	// check token
+	if claimedUserId, err := util.VerifyToken(favoriteRequest.Token); err != nil || claimedUserId != favoriteRequest.UserId {
+		var statusMsg string
+		if err != nil {
+			statusMsg = err.Error()
+		} else {
+			statusMsg = "Token and user_id mismatch!"
+		}
+		c.JSON(http.StatusOK, types.FavoriteResponse{
+			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: statusMsg},
+		})
+		return
+	}
 
 	f := repository.Favorite{
 		UserID:  favoriteRequest.UserId,
@@ -70,7 +78,19 @@ func FavoriteList(c *gin.Context) {
 		return
 	}
 
-	// TODO check token
+	// check token
+	if claimedUserId, err := util.VerifyToken(favoriteListRequest.Token); err != nil || claimedUserId != favoriteListRequest.UserId {
+		var statusMsg string
+		if err != nil {
+			statusMsg = err.Error()
+		} else {
+			statusMsg = "Token and user_id mismatch!"
+		}
+		c.JSON(http.StatusOK, types.FavoriteResponse{
+			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: statusMsg},
+		})
+		return
+	}
 
 	videoIds, err := repository.GetFavoriteVideoIdsByUserId(favoriteListRequest.UserId)
 	fmt.Println(videoIds)
@@ -103,6 +123,7 @@ func FavoriteList(c *gin.Context) {
 
 		videoList := make([]types.Video, len(videoPtrList))
 		for _, videoPtr := range videoPtrList {
+			// 如果某个视频的作者ID对应的用户不存在，返回未知错误
 			author, err := repository.GetUserById(videoPtr.AuthorID)
 			if err != nil {
 				c.JSON(http.StatusOK, types.FavoriteListResponse{

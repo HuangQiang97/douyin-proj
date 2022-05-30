@@ -11,8 +11,8 @@ const (
 	NotSignedIn       int32 = 5
 	DuplicateFavorite int32 = 6
 	NotInFavorite     int32 = 7
+	AuthFailed        int32 = 8
 	UnknownError      int32 = 255
-	AuthFailed        int32 = 255
 )
 
 var (
@@ -25,5 +25,5 @@ var (
 	DuplicateFavoriteResp = types.Response{StatusCode: DuplicateFavorite, StatusMsg: "Duplicate favorite!"}
 	NotInFavoriteResp     = types.Response{StatusCode: NotInFavorite, StatusMsg: "Not in favorite list!"}
 	UnknownErrorResp      = types.Response{StatusCode: UnknownError, StatusMsg: "Unknown error!"}
-	AuthFailedResp      = types.Response{StatusCode: AuthFailed, StatusMsg: "token is invalid"}
+	AuthFailedResp        = types.Response{StatusCode: AuthFailed, StatusMsg: "token is invalid"}
 )
