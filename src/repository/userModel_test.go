@@ -4,6 +4,7 @@ import (
 	"douyin-proj/src/config"
 	"douyin-proj/src/database"
 	"fmt"
+	"sync"
 	"testing"
 )
 
@@ -70,4 +71,18 @@ func TestUpdateFollow(t *testing.T) {
 		t.Errorf("update user follow&fans error = %v", err)
 		return
 	}
+}
+
+func TestUpdateFollow2(t *testing.T) {
+	M := 100000
+	w := sync.WaitGroup{}
+	w.Add(M)
+	for i := 0; i < 100000; i++ {
+		go func() {
+			UpdateFollow(14, 1)
+			w.Done()
+		}()
+	}
+	w.Wait()
+
 }
