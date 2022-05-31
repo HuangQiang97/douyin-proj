@@ -16,19 +16,19 @@ func (r *Response) WithStatusMsg(str string) {
 type User struct {
 	Id            uint   `json:"id,omitempty"`
 	Name          string `json:"name,omitempty"`
-	FollowCount   uint64 `json:"follow_count,omitempty"`
-	FollowerCount uint64 `json:"follower_count,omitempty"`
-	IsFollow      bool   `json:"is_follow,omitempty"`
+	FollowCount   uint64 `json:"follow_count"` // 删掉omitempty，否则如果是0，json不会序列化
+	FollowerCount uint64 `json:"follower_count"`
+	IsFollow      bool   `json:"is_follow"`
 }
 
 type Video struct {
 	Id            uint   `json:"id,omitempty"`
 	Author        User   `json:"author"`
-	PlayUrl       string `json:"play_url" json:"play_url,omitempty"`
+	PlayUrl       string `json:"play_url"`
 	CoverUrl      string `json:"cover_url,omitempty"`
-	FavoriteCount uint64 `json:"favorite_count,omitempty"`
-	CommentCount  uint64 `json:"comment_count,omitempty"`
-	IsFavorite    bool   `json:"is_favorite,omitempty"`
+	FavoriteCount uint64 `json:"favorite_count"`
+	CommentCount  uint64 `json:"comment_count"`
+	IsFavorite    bool   `json:"is_favorite"`
 	Title         string `json:"title,omitempty"`
 }
 

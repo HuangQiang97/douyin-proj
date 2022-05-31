@@ -14,7 +14,7 @@ func Run(httpServer *gin.Engine) {
 	// 注册路由
 	initRouter(httpServer)
 
-	serverError := httpServer.Run(config.ServerConfig.HTTP_HOST + ":" + config.ServerConfig.HTTP_PORT)
+	serverError := httpServer.Run(":" + config.ServerConfig.HTTP_PORT)
 
 	if serverError != nil {
 		panic("server error !" + serverError.Error())

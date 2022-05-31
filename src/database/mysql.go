@@ -32,13 +32,12 @@ func initMySQL() error {
 			NoLowerCase:   false,
 		},
 		PrepareStmt: true,
+		Logger:      logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		return err
 	}
-	if config.ServerConfig.MODE == "debug" {
-		MySQLDb.Logger.LogMode(logger.Silent)
-	}
+
 	db, _ := MySQLDb.DB()
 	db.SetMaxIdleConns(config.MySQLConfig.MaxIdleConns)
 	db.SetMaxOpenConns(config.MySQLConfig.MaxOpenConns)
