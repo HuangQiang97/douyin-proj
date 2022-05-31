@@ -57,3 +57,17 @@ func TestGetUserByName(t *testing.T) {
 	}
 	fmt.Println(user)
 }
+
+func TestUpdateFollowAndFans(t *testing.T) {
+	if err := UpdateFollowAndFans(3, 4, -1); err != nil {
+		t.Errorf("update user follow&fans error = %v", err)
+		return
+	}
+}
+
+func TestUpdateFollow(t *testing.T) {
+	if err := UpdateFollow(3, -1); err != nil {
+		t.Errorf("update user follow&fans error = %v", err)
+		return
+	}
+}

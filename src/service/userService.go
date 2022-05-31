@@ -2,6 +2,7 @@ package service
 
 import (
 	"crypto/md5"
+	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/repository"
 	"errors"
 	"fmt"
@@ -28,11 +29,11 @@ func CreateUser(username, password string) (uint, error) {
 func CheckUser(username, password string) (uint, error) {
 	user, err := repository.GetUserByName(username)
 	if err != nil {
-		return 0, err
+		return uint(ErrNo.UserNotExisted), err
 	}
 	p := encryptPassword(password)
 	if user.Password != p {
-		return 0, errors.New("password error")
+		return uint(ErrNo.WrongPassword), errors.New("password error")
 	}
 	return user.ID, nil
 }
