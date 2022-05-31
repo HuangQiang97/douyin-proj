@@ -12,6 +12,7 @@ const (
 	DuplicateFavorite int32 = 6
 	NotInFavorite     int32 = 7
 	AuthFailed        int32 = 8 // token校验失败
+	VideoUploadFailed int32 = 9 // 视频上传失败
 	UnknownError      int32 = 255
 )
 
@@ -26,4 +27,5 @@ var (
 	NotInFavoriteResp     = types.Response{StatusCode: NotInFavorite, StatusMsg: "Not in favorite list!"}
 	UnknownErrorResp      = types.Response{StatusCode: UnknownError, StatusMsg: "Unknown error!"}
 	AuthFailedResp        = types.Response{StatusCode: AuthFailed, StatusMsg: "Token is invalid!"}
+	VideoUploadFailedResp = types.Response{StatusCode: VideoUploadFailed, StatusMsg: "Video upload failed!"}
 )

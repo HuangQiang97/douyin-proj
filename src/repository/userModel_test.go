@@ -86,3 +86,10 @@ func TestUpdateFollow2(t *testing.T) {
 	w.Wait()
 
 }
+
+func TestGetUserResponse(t *testing.T) {
+	var uid, id = uint(3), uint(2)
+	user, isFolllow := GetUserResponse(uid, id)
+	fmt.Println(user, isFolllow)
+
+}

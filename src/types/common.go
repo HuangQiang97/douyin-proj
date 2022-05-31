@@ -25,7 +25,7 @@ type Video struct {
 	Id            uint   `json:"id,omitempty"`
 	Author        User   `json:"author"`
 	PlayUrl       string `json:"play_url"`
-	CoverUrl      string `json:"cover_url,omitempty"`
+	CoverUrl      string `json:"cover_url"`
 	FavoriteCount uint64 `json:"favorite_count"`
 	CommentCount  uint64 `json:"comment_count"`
 	IsFavorite    bool   `json:"is_favorite"`

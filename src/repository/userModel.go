@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"douyin-proj/src/database"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -14,12 +13,17 @@ type User struct {
 	FansCount   uint64 `json:"fans_count" gorm:"default:0"`
 }
 
+type UserResp struct {
+	User     `gorm:"embedded"`
+	isFollow bool
+}
+
 func (u *User) TableName() string {
 	return "user"
 }
 
 func CreateUser(user *User) error {
-	return database.MySQLDb.Create(user).Error
+	return DB.Create(user).Error
 }
 
 func GetUserById(id uint) (*User, error) {
@@ -30,8 +34,8 @@ func GetUserById(id uint) (*User, error) {
 	return &user, nil
 }
 
-func GetUsersByIds(ids []uint) ([]*User, error) {
-	var users []*User
+func GetUsersByIds(ids []uint) ([]User, error) {
+	var users []User
 	if err := DB.Find(&users, ids).Error; err != nil {
 		return nil, err
 	}
@@ -82,4 +86,14 @@ func UpdateFollowAndFans(followId uint, fansId uint, c int) error {
 		return errors.New("user not exist")
 	}
 	return nil
+}
+
+func GetUserResponse(uid uint, id uint) (user User, isFollow bool) {
+	subquery1 := DB.Table("user").Where("id = ?", uid).Select("*")
+	subquery2 := DB.Table("relation").Where("user_id = ? AND follow_id = ?", id, uid).Select("count(1) as is_follow")
+	//row := DB.Table("(?) as u , (?) as r", subquery1, subquery2).Select("*").Row()
+	//row.Scan(&user.ID, &user.UserName, &user.Password, &user.FollowCount, &user.FansCount, &isFollow)
+	var userresp = UserResp{}
+	DB.Table("(?) as u , (?) as r", subquery1, subquery2).Find(&userresp)
+	return userresp.User, userresp.isFollow
 }
