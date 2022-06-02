@@ -16,8 +16,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-upload/video/*
-upload/cover/*
+upload/video/*.mp4
+upload/cover/*.jpeg
 resources/*
 
 # Go workspace file
