@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/repository"
+	"douyin-proj/src/types"
 	"errors"
 	"fmt"
 )
@@ -36,4 +37,20 @@ func CheckUser(username, password string) (uint, error) {
 		return uint(ErrNo.WrongPassword), errors.New("password error")
 	}
 	return user.ID, nil
+}
+
+func GetUserInfo(userId uint, id uint) (user *types.User, err error) {
+	u, err := repository.GetUserById(userId)
+	if err != nil {
+		return nil, err
+	}
+	isFollow := repository.GetRelation(&repository.Relation{UserID: id, FollowID: userId})
+	user = &types.User{
+		Id:            u.ID,
+		Name:          u.UserName,
+		FollowCount:   u.FollowCount,
+		FollowerCount: u.FansCount,
+		IsFollow:      isFollow,
+	}
+	return user, nil
 }

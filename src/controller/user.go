@@ -3,7 +3,6 @@ package controller
 import (
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/global/util"
-	"douyin-proj/src/repository"
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
@@ -100,7 +99,7 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 	// 查询用户
-	user, err := repository.GetUserById(uId)
+	user, err := service.GetUserInfo(userInfoRequest.UserId, uId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserResponse{
 			Response: ErrNo.UserNotExistedResp,
@@ -110,11 +109,11 @@ func UserInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, types.UserResponse{
 		Response: ErrNo.SuccessResp,
 		User: types.User{
-			Id:            user.ID,
-			Name:          user.UserName,
+			Id:            user.Id,
+			Name:          user.Name,
 			FollowCount:   user.FollowCount,
-			FollowerCount: user.FansCount,
-			IsFollow:      false, // todo: follow 关系查询
+			FollowerCount: user.FollowerCount,
+			IsFollow:      user.IsFollow,
 		},
 	})
 
