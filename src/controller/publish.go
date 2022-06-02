@@ -3,18 +3,15 @@ package controller
 import (
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/global/util"
-	"douyin-proj/src/repository"
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"os"
-	"path"
-	"strings"
-	"time"
 )
 
+// Publish 上传视频
 func Publish(c *gin.Context) {
+	// 请求参数获取
 	var publishRequest = types.PublishRequest{}
 	if err := c.ShouldBind(&publishRequest); err != nil {
 		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()})
@@ -30,33 +27,11 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	// 如果已经存在，会将文件清空
-	// TODO：需要设计文件存储的路径，以及文件名
-	// 校验用户提供的文件名是否合法，以防止路径注入
-	destfile, err := os.Create(path.Join("./upload/", path.Clean("/"+strings.Trim(publishRequest.Data.Filename, "/"))))
+	// 保存文件
+	err = service.SaveVideo(publishRequest.Data, uId, publishRequest.Title)
 
 	if err != nil {
 		// 创建文件失败，原因可能是1.路径不存在2.权限不足3.打开文件数量超过上限4.磁盘空间不足
-		c.JSON(http.StatusOK, ErrNo.VideoUploadFailedResp)
-		return
-	}
-	// 将request中的文件保存到目标文件
-	err = c.SaveUploadedFile(publishRequest.Data, destfile.Name())
-	if err != nil {
-		c.JSON(http.StatusOK, ErrNo.VideoUploadFailedResp)
-		return
-	}
-	// TODO : url
-	video := repository.Video{
-		AuthorID:      uId,
-		PlayUrl:       "",
-		CoverUrl:      "",
-		FavoriteCount: 0,
-		CommentCount:  0,
-		Title:         publishRequest.Title,
-		CreatedAt:     uint64(time.Now().Unix()),
-	}
-	if err = repository.CreateVideo(&video); err != nil {
 		c.JSON(http.StatusOK, ErrNo.VideoUploadFailedResp)
 		return
 	}

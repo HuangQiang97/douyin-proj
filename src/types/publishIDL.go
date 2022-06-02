@@ -11,7 +11,7 @@ type PublishRequest struct {
 type PublishResponse Response
 
 type VideoListRequest struct {
-	UserId uint   `form:"user_id" binding:"required"`
+	UserId int64  `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
 }
 

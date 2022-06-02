@@ -23,7 +23,7 @@ func Run(httpServer *gin.Engine) {
 
 func initRouter(r *gin.Engine) {
 	// public directory is used to serve static resources
-	r.Static("/static", "./public")
+	r.Static("/upload", "./upload")
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(200, "pong")
 	})

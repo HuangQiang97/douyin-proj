@@ -16,7 +16,9 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-upload
+upload/video/*
+upload/cover/*
+resources/*
 
 # Go workspace file
 go.work

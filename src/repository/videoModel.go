@@ -42,7 +42,7 @@ func GetVideosByIds(ids []uint) ([]Video, error) {
 
 func GetVideoByAuthorId(authorId uint) ([]Video, error) {
 	var videos []Video
-	err := DB.Where("author_id = ?", authorId).Find(&videos).Error
+	err := DB.Table("video").Where("author_id = ?", authorId).Find(&videos).Error
 	if err != nil {
 		return nil, err
 	}
@@ -60,4 +60,11 @@ func GetVideoByAuthorIdWithFavorite(authorId uint, id uint) []VideoResp {
 		videolist = append(videolist, v)
 	}
 	return videolist
+}
+
+// GetVideoTimeDesc 倒叙时间获得视频
+func GetVideoTimeDesc(lastTime int64) ([]Video, error) {
+	var videoList []Video
+	err := DB.Table("video").Where("created_at < ? ", lastTime).Order("created_at DESC").Limit(30).Find(&videoList).Error
+	return videoList, err
 }
