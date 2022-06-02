@@ -1,7 +1,6 @@
 package types
 
 type FavoriteRequest struct {
-	UserId     uint   `json:"user_id,omitempty"  binding:"required"`
 	Token      string `json:"token"  binding:"required"`
 	VideoId    uint   `json:"video_id" binding:"required"`
 	ActionType uint8  `json:"action_type" binding:"required,min=1,max=2"`

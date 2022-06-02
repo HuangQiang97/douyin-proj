@@ -22,21 +22,16 @@ func FavoriteAction(c *gin.Context) {
 	}
 
 	// check token
-	if claimedUserId, err := util.VerifyToken(favoriteRequest.Token); err != nil || claimedUserId != favoriteRequest.UserId {
-		var statusMsg string
-		if err != nil {
-			statusMsg = err.Error()
-		} else {
-			statusMsg = "Token and user_id mismatch!"
-		}
+	uId, err := util.VerifyToken(favoriteRequest.Token)
+	if err != nil {
 		c.JSON(http.StatusOK, types.FavoriteResponse{
-			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: statusMsg},
+			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: err.Error()},
 		})
 		return
 	}
 
 	f := repository.Favorite{
-		UserID:  favoriteRequest.UserId,
+		UserID:  uId,
 		VideoID: favoriteRequest.VideoId,
 	}
 
@@ -104,8 +99,7 @@ func FavoriteList(c *gin.Context) {
 		// return if no favorite video
 		if len(videoIds) == 0 {
 			c.JSON(http.StatusOK, types.FavoriteListResponse{
-				Response:  ErrNo.SuccessResp,
-				VideoList: []types.Video{},
+				Response: ErrNo.SuccessResp,
 			})
 			return
 		}
