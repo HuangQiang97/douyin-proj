@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
+	"path"
+	"strings"
 	"time"
 )
 
@@ -30,7 +32,9 @@ func Publish(c *gin.Context) {
 
 	// 如果已经存在，会将文件清空
 	// TODO：需要设计文件存储的路径，以及文件名
-	destfile, err := os.Create("./upload/" + publishRequest.Data.Filename)
+	// 校验用户提供的文件名是否合法，以防止路径注入
+	destfile, err := os.Create(path.Join("./upload/", path.Clean("/"+strings.Trim(publishRequest.Data.Filename, "/"))))
+
 	if err != nil {
 		// 创建文件失败，原因可能是1.路径不存在2.权限不足3.打开文件数量超过上限4.磁盘空间不足
 		c.JSON(http.StatusOK, ErrNo.VideoUploadFailedResp)
