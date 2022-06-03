@@ -1,6 +1,9 @@
 package repository
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestCreateFavorite(t *testing.T) {
 	f := Favorite{
@@ -104,4 +107,26 @@ func TestIsFavorite(t *testing.T) {
 	}
 	result = IsFavorite(&f)
 	t.Log("Is favorite: ", result)
+}
+
+func TestGetFavoriteVideoByUserId(t *testing.T) {
+	videos, err := GetFavoriteVideoByUserId(3)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	for _, v := range videos {
+		fmt.Println(v)
+	}
+}
+
+func TestInsertFavorite(t *testing.T) {
+	err := InsertFavorite(&Favorite{
+		UserID:  5,
+		VideoID: 36,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
 }

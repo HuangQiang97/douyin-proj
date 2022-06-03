@@ -1,9 +1,9 @@
 package types
 
 type FavoriteRequest struct {
-	Token      string `json:"token"  binding:"required"`
-	VideoId    uint   `json:"video_id" binding:"required"`
-	ActionType uint8  `json:"action_type" binding:"required,min=1,max=2"`
+	Token      string `form:"token" binding:"required"`
+	VideoId    uint   `form:"video_id" binding:"required"`
+	ActionType uint8  `form:"action_type" binding:"required,oneof=1 2"`
 }
 
 type FavoriteResponse struct {

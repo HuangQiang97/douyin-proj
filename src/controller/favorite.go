@@ -3,9 +3,8 @@ package controller
 import (
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/global/util"
-	"douyin-proj/src/repository"
+	"douyin-proj/src/service"
 	"douyin-proj/src/types"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,51 +15,39 @@ func FavoriteAction(c *gin.Context) {
 	var favoriteRequest = types.FavoriteRequest{}
 	if err := c.ShouldBind(&favoriteRequest); err != nil {
 		c.JSON(http.StatusOK, types.FavoriteResponse{
-			Response: ErrNo.ParamInvalidResp,
+			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
-
 	// check token
 	uId, err := util.VerifyToken(favoriteRequest.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, types.FavoriteResponse{
-			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: err.Error()},
+			Response: ErrNo.AuthFailedResp,
 		})
 		return
 	}
 
-	f := repository.Favorite{
-		UserID:  uId,
-		VideoID: favoriteRequest.VideoId,
-	}
-
 	switch favoriteRequest.ActionType {
 	case 1: // do favorite
-		if err := repository.CreateFavorite(&f); err != nil {
+		if err := service.AddFavorite(uId, favoriteRequest.VideoId); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
 				Response: ErrNo.DuplicateFavoriteResp,
 			})
 			return
-		} else {
-			c.JSON(http.StatusOK, types.FavoriteResponse{
-				Response: ErrNo.SuccessResp,
-			})
-			return
 		}
 	case 2: // undo favorite
-		if err := repository.UndoFavorite(&f); err != nil {
+		if err := service.UndoFavorite(uId, favoriteRequest.VideoId); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
 				Response: ErrNo.NotInFavoriteResp,
 			})
 			return
-		} else {
-			c.JSON(http.StatusOK, types.FavoriteResponse{
-				Response: ErrNo.SuccessResp,
-			})
-			return
 		}
 	}
+	c.JSON(http.StatusOK, types.FavoriteResponse{
+		Response: ErrNo.SuccessResp,
+	})
+	return
 }
 
 // FavoriteList all users have same favorite video list
@@ -68,91 +55,30 @@ func FavoriteList(c *gin.Context) {
 	var favoriteListRequest = types.FavoriteListRequest{}
 	if err := c.ShouldBind(&favoriteListRequest); err != nil {
 		c.JSON(http.StatusOK, types.FavoriteListResponse{
-			Response: ErrNo.ParamInvalidResp,
+			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
 
 	// check token
-	if claimedUserId, err := util.VerifyToken(favoriteListRequest.Token); err != nil || claimedUserId != favoriteListRequest.UserId {
-		var statusMsg string
-		if err != nil {
-			statusMsg = err.Error()
-		} else {
-			statusMsg = "Token and user_id mismatch!"
-		}
-		c.JSON(http.StatusOK, types.FavoriteResponse{
-			Response: types.Response{StatusCode: ErrNo.AuthFailed, StatusMsg: statusMsg},
-		})
-		return
-	}
-
-	videoIds, err := repository.GetFavoriteVideoIdsByUserId(favoriteListRequest.UserId)
-	fmt.Println(videoIds)
+	uId, err := util.VerifyToken(favoriteListRequest.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, types.FavoriteListResponse{
-			Response: ErrNo.UnknownErrorResp,
-		})
-		return
-	} else {
-
-		// return if no favorite video
-		if len(videoIds) == 0 {
-			c.JSON(http.StatusOK, types.FavoriteListResponse{
-				Response: ErrNo.SuccessResp,
-			})
-			return
-		}
-
-		// get repository.Video by video IDs
-		// 注意：如果video表中不存在对应的video_id，那么会跳过此记录
-		// 因此，可能出现video ID数量与此处返回的Video对象数量不一致的情况
-		videoPtrList, err := repository.GetVideosByIds(videoIds)
-		if err != nil {
-			c.JSON(http.StatusOK, types.FavoriteListResponse{
-				Response: ErrNo.UnknownErrorResp,
-			})
-			return
-		}
-
-		videoList := make([]types.Video, len(videoPtrList))
-		for _, videoPtr := range videoPtrList {
-			// 如果某个视频的作者ID对应的用户不存在，返回未知错误
-			author, err := repository.GetUserById(videoPtr.AuthorID)
-			if err != nil {
-				c.JSON(http.StatusOK, types.FavoriteListResponse{
-					Response: ErrNo.UnknownErrorResp,
-				})
-				return
-			}
-
-			// convert repository.Video to types.Video
-			video := types.Video{
-				Id: videoPtr.ID,
-				Author: types.User{ // convert repository.User to types.User
-					Id:            author.ID,
-					Name:          author.UserName,
-					FollowCount:   author.FollowCount,
-					FollowerCount: author.FansCount,
-					IsFollow:      false, // TODO: implement IsFollow checker
-				},
-				PlayUrl:       videoPtr.PlayUrl,
-				CoverUrl:      videoPtr.CoverUrl,
-				FavoriteCount: videoPtr.FavoriteCount,
-				CommentCount:  videoPtr.CommentCount,
-				IsFavorite: repository.IsFavorite(&repository.Favorite{
-					UserID:  favoriteListRequest.UserId,
-					VideoID: videoPtr.ID,
-				}),
-				Title: videoPtr.Title,
-			}
-			videoList = append(videoList, video)
-		}
-		c.JSON(http.StatusOK, types.FavoriteListResponse{
-			Response:  ErrNo.SuccessResp,
-			VideoList: videoList,
+			Response: ErrNo.AuthFailedResp,
 		})
 		return
 	}
 
+	videoList, err := service.GetFavoriteVideoListByUserId(favoriteListRequest.UserId, uId)
+	if err != nil {
+		c.JSON(http.StatusOK, types.FavoriteListResponse{
+			Response: types.Response{StatusCode: ErrNo.UnknownError, StatusMsg: err.Error()},
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.FavoriteListResponse{
+		Response:  ErrNo.SuccessResp,
+		VideoList: videoList,
+	})
 }
