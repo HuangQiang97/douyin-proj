@@ -47,7 +47,7 @@ func PublishList(c *gin.Context) {
 		return
 	}
 	// 校验jwt token
-	id, err := util.VerifyToken(videoListRequest.Token)
+	uId, err := util.VerifyToken(videoListRequest.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, types.VideoListResponse{
 			Response: ErrNo.AuthFailedResp,
@@ -55,7 +55,7 @@ func PublishList(c *gin.Context) {
 		return
 	}
 
-	videoList, err := service.GetVideoList(id)
+	videoList, err := service.GetVideoList(uId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.VideoListResponse{
 			Response: types.Response{

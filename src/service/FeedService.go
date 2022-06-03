@@ -7,7 +7,6 @@ import (
 
 // GetFeedVideos 根据截至时间获得视频
 func GetFeedVideos(lastTime int64, isAuth bool, uid uint) (feedVideos []types.Video, nextTime int64, err error) {
-
 	// 视频流
 	videoList, err := repository.GetVideoTimeDesc(lastTime)
 	if err != nil {
@@ -29,7 +28,14 @@ func GetFeedVideos(lastTime int64, isAuth bool, uid uint) (feedVideos []types.Vi
 			IsFollow:      false,
 		}
 		// 填充视频信息
-		feedVideo := types.Video{Id: video.ID, PlayUrl: video.PlayUrl, CoverUrl: video.CoverUrl, FavoriteCount: video.FavoriteCount, CommentCount: video.CommentCount, Title: video.Title}
+		feedVideo := types.Video{
+			Id:            video.ID,
+			PlayUrl:       video.PlayUrl,
+			CoverUrl:      video.CoverUrl,
+			FavoriteCount: video.FavoriteCount,
+			CommentCount:  video.CommentCount,
+			Title:         video.Title,
+		}
 		// 如果用户已经登录，获取视频点赞和关注信息
 		if isAuth {
 			// 是否关注视频作者

@@ -50,7 +50,7 @@ func GetVideoByAuthorId(authorId uint) ([]Video, error) {
 }
 
 func GetVideoByAuthorIdWithFavorite(authorId uint, id uint) []VideoResp {
-	var videolist = []VideoResp{}
+	var videolist []VideoResp
 	subquery := DB.Table("favorite").Where("user_id = ? AND video_id = video.id", id).Select("count(1)")
 	//DB.Table("video").Where("author_id = ?", authorId).Select("*,(?) as is_favorite", subquery).Find(&videolist)
 	rows, _ := DB.Table("video").Where("author_id = ?", authorId).Select("*,(?) as is_favorite", subquery).Rows()
