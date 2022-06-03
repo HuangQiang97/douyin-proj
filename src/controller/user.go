@@ -66,6 +66,7 @@ func Login(c *gin.Context) {
 				Response: ErrNo.WrongPasswordResp,
 			})
 		}
+		return
 	}
 
 	token, err := util.ReleaseToken(id)
@@ -86,7 +87,7 @@ func UserInfo(c *gin.Context) {
 	var userInfoRequest = types.UserInfoRequest{}
 	if err := c.ShouldBind(&userInfoRequest); err != nil {
 		c.JSON(http.StatusOK, types.FavoriteListResponse{
-			Response: ErrNo.ParamInvalidResp,
+			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}

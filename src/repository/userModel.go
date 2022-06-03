@@ -88,12 +88,23 @@ func UpdateFollowAndFans(followId uint, fansId uint, c int) error {
 	return nil
 }
 
-func GetUserResponse(uid uint, id uint) (user User, isFollow bool) {
-	subquery1 := DB.Table("user").Where("id = ?", uid).Select("*")
-	subquery2 := DB.Table("relation").Where("user_id = ? AND follow_id = ?", id, uid).Select("count(1) as is_follow")
-	//row := DB.Table("(?) as u , (?) as r", subquery1, subquery2).Select("*").Row()
+func GetUserResponse(qid uint, uid uint) (user User, isFollow bool) {
+	subquery1 := DB.Table("user").Where("id = ?", qid).Select("*")
+	subquery2 := DB.Table("relation").Where("user_id = ? AND follow_id = ?", uid, qid).Select("count(1) as is_follow")
+	/*row := DB.Table("(?) as u , (?) as r", subquery1, subquery2).Select("*").Row()
+	row.Scan(&user, &isFollow)
+	return user, isFollow*/
 	//row.Scan(&user.ID, &user.UserName, &user.Password, &user.FollowCount, &user.FansCount, &isFollow)
 	var userresp = UserResp{}
 	DB.Table("(?) as u , (?) as r", subquery1, subquery2).Find(&userresp)
 	return userresp.User, userresp.isFollow
+}
+
+func GetUserInfo(qid uint, uid uint) (*User, bool, error) {
+	user := User{}
+	if err := DB.Find(&user, qid).Error; err != nil {
+		return nil, false, err
+	}
+	isFollow := GetRelation(&Relation{UserID: uid, FollowID: qid})
+	return &user, isFollow, nil
 }
