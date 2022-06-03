@@ -6,9 +6,8 @@ import (
 )
 
 type Relation struct {
-	ID       uint `gorm:"primarykey"`
-	UserID   uint
-	FollowID uint
+	UserID   uint `gorm:"primarykey"`
+	FollowID uint `gorm:"primarykey"`
 }
 
 func (r *Relation) TableName() string {

@@ -88,7 +88,7 @@ func UpdateFollowAndFans(followId uint, fansId uint, c int) error {
 	return nil
 }
 
-func GetUserResponse(qid uint, uid uint) (user User, isFollow bool) {
+func GetUserResponse(qid uint, uid uint) (user *User, isFollow bool) {
 	subquery1 := DB.Table("user").Where("id = ?", qid).Select("*")
 	subquery2 := DB.Table("relation").Where("user_id = ? AND follow_id = ?", uid, qid).Select("count(1) as is_follow")
 	/*row := DB.Table("(?) as u , (?) as r", subquery1, subquery2).Select("*").Row()
@@ -97,7 +97,7 @@ func GetUserResponse(qid uint, uid uint) (user User, isFollow bool) {
 	//row.Scan(&user.ID, &user.UserName, &user.Password, &user.FollowCount, &user.FansCount, &isFollow)
 	var userresp = UserResp{}
 	DB.Table("(?) as u , (?) as r", subquery1, subquery2).Find(&userresp)
-	return userresp.User, userresp.isFollow
+	return &userresp.User, userresp.isFollow
 }
 
 func GetUserInfo(qid uint, uid uint) (*User, bool, error) {
