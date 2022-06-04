@@ -2,6 +2,8 @@ package config
 
 import (
 	"gopkg.in/ini.v1"
+	"log"
+	"os"
 )
 
 const DefaultPath string = "resources/application.ini"
@@ -43,6 +45,7 @@ func Init(path string) error {
 	if err := initServerConfig(cfg); err != nil {
 		return err
 	}
+	initLog()
 	SecretKey = cfg.Section("jwt").Key("secretKey").String()
 	return nil
 }
@@ -55,4 +58,10 @@ func initServerConfig(cfg *ini.File) error {
 func initMysqlConfig(cfg *ini.File) error {
 	MySQLConfig = new(MySQLInfo)
 	return cfg.Section("mysql").MapTo(MySQLConfig)
+}
+func initLog() {
+	file := "./log.txt"
+	logFile, _ := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
+	log.SetOutput(logFile) // 将文件设置为log输出的文件
+	log.SetFlags(log.LstdFlags | log.Lshortfile | log.LUTC)
 }
