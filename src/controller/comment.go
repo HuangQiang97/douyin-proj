@@ -67,7 +67,7 @@ func CommentAction(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, types.CommentResponse{
 			Response: ErrNo.SuccessResp,
-			Comment:  types.Comment{User: user[0]},
+			Comment:  types.Comment{User: *user},
 		})
 		log.Printf("删除评论成功。commentId:%d,uid:%d,videoId:%d\n", commentRequest.CommentId, userId, commentRequest.VideoId)
 
