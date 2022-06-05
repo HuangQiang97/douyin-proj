@@ -2,16 +2,24 @@ package service
 
 import (
 	"crypto/md5"
+	"douyin-proj/src/config"
 	"douyin-proj/src/global/ErrNo"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"encoding/hex"
 	"errors"
-	"fmt"
+	"log"
 )
 
 func encryptPassword(password string) string {
-	p := md5.Sum([]byte(password))
-	return fmt.Sprintf("%x", p)
+	pd := []byte(password)
+	salt := []byte(config.Salt)
+	h := md5.New()
+	h.Write(salt) // 先写盐值
+	h.Write(pd)
+	return hex.EncodeToString(h.Sum(nil))
+	//p := md5.Sum([]byte(password))
+	//return fmt.Sprintf("%x", p)
 }
 
 func CreateUser(username, password string) (uint, error) {
@@ -22,6 +30,7 @@ func CreateUser(username, password string) (uint, error) {
 	}
 	err := repository.CreateUser(user)
 	if err != nil {
+		log.Printf("创建用户失败。username:%s,err:%s\n", username, err)
 		return uint(0), err
 	}
 	return user.ID, nil
@@ -42,6 +51,7 @@ func CheckUser(username, password string) (uint, error) {
 func GetUserInfo(userId uint, id uint) (user *types.User, err error) {
 	u, err := repository.GetUserById(userId)
 	if err != nil {
+		log.Printf("获取用户信息失败。uid:%d,err:%s\n", userId, err)
 		return nil, err
 	}
 	isFollow := repository.GetRelation(&repository.Relation{UserID: id, FollowID: userId})

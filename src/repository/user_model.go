@@ -22,6 +22,8 @@ func (u *User) TableName() string {
 	return "user"
 }
 
+// CreateUser 创建用户
+// username数据中存在unique约束，防止重复
 func CreateUser(user *User) error {
 	return DB.Create(user).Error
 }
@@ -54,39 +56,40 @@ func GetUserByName(username string) (*User, error) {
 	return &user, nil
 }
 
-func UpdateFollow(id uint, c int) error {
-	db := DB.Session(&gorm.Session{}).Table("user").Where("id = ?", id).Update("follow_count", gorm.Expr("follow_count + ?", c))
-	if db.Error != nil {
-		return db.Error
-	}
-	if db.RowsAffected == 0 {
-		return errors.New("user not exist")
-	}
-	return nil
-}
-
-// UpdateFollowAndFans : followId关注或者取消关注fansId，更新两人的follow_count 与 fans_count字段
-// c为1或者-1，字段是非负数，如果字段原本为0，减1会报错
-func UpdateFollowAndFans(followId uint, fansId uint, c int) error {
-	db := DB.Session(&gorm.Session{}).Table("user").Where("id IN ?", []uint{followId, fansId})
-	db.Updates(map[string]interface{}{
-		"follow_count": gorm.Expr(`CASE id
-										WHEN ? THEN follow_count + ?
-									    WHEN ? THEN follow_count + 0
-									    END`, followId, c, fansId),
-		"fans_count": gorm.Expr(`CASE id
-										WHEN ? THEN fans_count + ?
-									    WHEN ? THEN fans_count + 0
-									    END`, fansId, c, followId),
-	})
-	if db.Error != nil {
-		return db.Error
-	}
-	if db.RowsAffected != 2 {
-		return errors.New("user not exist")
-	}
-	return nil
-}
+//func UpdateFollow(id uint, c int) error {
+//	db := DB.Session(&gorm.Session{}).Table("user").Where("id = ?", id).Update("follow_count", gorm.Expr("follow_count + ?", c))
+//	if db.Error != nil {
+//		return db.Error
+//	}
+//	if db.RowsAffected == 0 {
+//		return errors.New("user not exist")
+//	}
+//	return nil
+//}
+//
+//// UpdateFollowAndFans : followId关注或者取消关注fansId，更新两人的follow_count 与 fans_count字段
+//// c为1或者-1，字段是非负数，如果字段原本为0，减1会报错
+//func UpdateFollowAndFans(followId uint, fansId uint, c int) error {
+//	db := DB.Session(&gorm.Session{}).Table("user").Where("id IN ?", []uint{followId, fansId})
+//	db.Updates(map[string]interface{}{
+//		"follow_count": gorm.Expr(`CASE id
+//										WHEN ? THEN follow_count + ?
+//									    WHEN ? THEN follow_count + 0
+//									    END`, followId, c, fansId),
+//		"fans_count": gorm.Expr(`CASE id
+//										WHEN ? THEN fans_count + ?
+//									    WHEN ? THEN fans_count + 0
+//									    END`, fansId, c, followId),
+//	})
+//	if db.Error != nil {
+//		return db.Error
+//	}
+//	if db.RowsAffected != 2 {
+//		return errors.New("user not exist")
+//	}
+//	return nil
+//}
+//
 
 func GetUserResponse(qid uint, uid uint) (user *User, isFollow bool) {
 	subquery1 := DB.Table("user").Where("id = ?", qid).Select("*")
@@ -107,4 +110,10 @@ func GetUserInfo(qid uint, uid uint) (*User, bool, error) {
 	}
 	isFollow := GetRelation(&Relation{UserID: uid, FollowID: qid})
 	return &user, isFollow, nil
+}
+
+func ExistUser(id uint) bool {
+	count := int64(0)
+	DB.Table("user").Where("id=? ", id).Count(&count)
+	return count > 0
 }

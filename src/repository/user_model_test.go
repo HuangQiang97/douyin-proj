@@ -4,7 +4,6 @@ import (
 	"douyin-proj/src/config"
 	"douyin-proj/src/database"
 	"fmt"
-	"sync"
 	"testing"
 )
 
@@ -59,33 +58,33 @@ func TestGetUserByName(t *testing.T) {
 	fmt.Println(user)
 }
 
-func TestUpdateFollowAndFans(t *testing.T) {
-	if err := UpdateFollowAndFans(3, 4, -1); err != nil {
-		t.Errorf("update user follow&fans error = %v", err)
-		return
-	}
-}
-
-func TestUpdateFollow(t *testing.T) {
-	if err := UpdateFollow(3, -1); err != nil {
-		t.Errorf("update user follow&fans error = %v", err)
-		return
-	}
-}
-
-func TestUpdateFollow2(t *testing.T) {
-	M := 100000
-	w := sync.WaitGroup{}
-	w.Add(M)
-	for i := 0; i < 100000; i++ {
-		go func() {
-			UpdateFollow(14, 1)
-			w.Done()
-		}()
-	}
-	w.Wait()
-
-}
+//func TestUpdateFollowAndFans(t *testing.T) {
+//	if err := UpdateFollowAndFans(3, 4, -1); err != nil {
+//		t.Errorf("update user follow&fans error = %v", err)
+//		return
+//	}
+//}
+//
+//func TestUpdateFollow(t *testing.T) {
+//	if err := UpdateFollow(3, -1); err != nil {
+//		t.Errorf("update user follow&fans error = %v", err)
+//		return
+//	}
+//}
+//
+//func TestUpdateFollow2(t *testing.T) {
+//	M := 100000
+//	w := sync.WaitGroup{}
+//	w.Add(M)
+//	for i := 0; i < 100000; i++ {
+//		go func() {
+//			UpdateFollow(14, 1)
+//			w.Done()
+//		}()
+//	}
+//	w.Wait()
+//
+//}
 
 func TestGetUserResponse(t *testing.T) {
 	var uid, id = uint(3), uint(2)
