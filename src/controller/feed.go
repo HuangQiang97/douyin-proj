@@ -16,7 +16,7 @@ func Feed(c *gin.Context) {
 	// 请求参数获取
 	var feedRequest = types.FeedRequest{}
 	if err := c.ShouldBind(&feedRequest); err != nil {
-		log.Printf("反序列化获取视频流请求失败。token:%s,lastTime:%d\n", feedRequest.Token, feedRequest.LastTime)
+		log.Printf("反序列化获取视频流请求失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()})
 		return
 	}

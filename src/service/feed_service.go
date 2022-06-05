@@ -8,7 +8,6 @@ import (
 
 // GetFeedVideos 根据截至时间获得视频
 func GetFeedVideos(lastTime int64, isAuth bool, uid uint) (feedVideos []types.Video, nextTime int64, err error) {
-
 	// 视频流
 	videoList, err := repository.GetVideoTimeDesc(lastTime)
 	if err != nil {
