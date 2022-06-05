@@ -32,6 +32,7 @@ var (
 	MySQLConfig  *MySQLInfo
 	ServerConfig *ServerInfo
 	SecretKey    string
+	Salt         string
 )
 
 func Init(path string) error {
@@ -47,6 +48,8 @@ func Init(path string) error {
 	}
 	initLog()
 	SecretKey = cfg.Section("jwt").Key("secretKey").String()
+	Salt = cfg.Section("crypto").Key("salt").String()
+	log.Println("初始化配置成功")
 	return nil
 }
 
