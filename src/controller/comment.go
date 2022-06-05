@@ -6,22 +6,26 @@ import (
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strings"
 )
 
-// make/delete comment (only for signed user)
+// CommentAction 评论请求操作
 func CommentAction(c *gin.Context) {
-	// check param
+	// 参数绑定
 	var commentRequest = types.CommentRequest{}
 	if err := c.ShouldBind(&commentRequest); err != nil {
+		log.Println("反序列化评论操作请求失败")
 		c.JSON(http.StatusOK, types.CommentResponse{
 			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
-
+	// 登录
 	userId, err := util.VerifyToken(commentRequest.Token)
 	if err != nil {
+		log.Printf("登录失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.CommentResponse{
 			Response: ErrNo.AuthFailedResp,
 		})
@@ -29,13 +33,15 @@ func CommentAction(c *gin.Context) {
 	}
 
 	switch commentRequest.ActionType {
-	case 1: //make comment
-		if commentRequest.CommentText == "" {
+	case 1: // 添加评论
+		if len(strings.TrimSpace(commentRequest.CommentText)) == 0 {
+			log.Println("评论内容为空")
 			c.JSON(http.StatusOK, types.CommentResponse{
 				Response: ErrNo.ParamInvalidResp,
 			})
 			return
 		}
+		// 创建评论
 		comment, err := service.CreateComment(userId, commentRequest.VideoId, commentRequest.CommentText)
 		if err != nil {
 			c.JSON(http.StatusOK, types.CommentResponse{
@@ -46,16 +52,12 @@ func CommentAction(c *gin.Context) {
 
 		c.JSON(http.StatusOK, types.CommentResponse{
 			Response: ErrNo.SuccessResp,
-			Comment:  comment[0],
+			Comment:  *comment,
 		})
+		log.Printf("创建评论成功。commentId:%d,uid:%d,videoId:%d\n", comment.Id, userId, commentRequest.VideoId)
 
-	case 2: //delete comment
-		if commentRequest.CommentId == 0 {
-			c.JSON(http.StatusOK, types.CommentResponse{
-				Response: ErrNo.ParamInvalidResp,
-			})
-			return
-		}
+	// 删除评论
+	case 2:
 		user, err := service.DeleteCommentById(userId, commentRequest.VideoId, commentRequest.CommentId)
 		if err != nil {
 			c.JSON(http.StatusOK, types.CommentResponse{
@@ -67,27 +69,34 @@ func CommentAction(c *gin.Context) {
 			Response: ErrNo.SuccessResp,
 			Comment:  types.Comment{User: user[0]},
 		})
+		log.Printf("删除评论成功。commentId:%d,uid:%d,videoId:%d\n", commentRequest.CommentId, userId, commentRequest.VideoId)
+
 	}
 }
 
-// CommentList all videos have same demo comment list
+// CommentList 按时间倒叙排列返回视频评论
 func CommentList(c *gin.Context) {
+	// 参数绑定
 	var commentListRequest = types.CommentListRequest{}
 	if err := c.ShouldBind(&commentListRequest); err != nil {
+		log.Println("反序列化获取评论列表操作请求失败")
 		c.JSON(http.StatusOK, types.CommentListResponse{
 			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
 
+	// 鉴权
 	userId, err := util.VerifyToken(commentListRequest.Token)
 	if err != nil {
+		log.Printf("登录失败，err:%s\n", err)
 		c.JSON(http.StatusOK, types.CommentResponse{
 			Response: ErrNo.AuthFailedResp,
 		})
 		return
 	}
 
+	// 获取评论
 	commentList, err := service.GetCommentByVideoId(commentListRequest.VideoId, userId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.CommentListResponse{
@@ -99,4 +108,6 @@ func CommentList(c *gin.Context) {
 		Response:    ErrNo.SuccessResp,
 		CommentList: commentList,
 	})
+	log.Printf("获取评论列表成功。uid:%d,videoId:%d\n", userId, commentListRequest.VideoId)
+
 }
