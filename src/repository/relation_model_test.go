@@ -12,25 +12,25 @@ func TestCreateRelation(t *testing.T) {
 	}
 }
 
-func TestDuplicationCreateRelation(t *testing.T) {
-	r1 := Relation{
-		UserID:   2,
-		FollowID: 4,
-	}
-	if err := CreateRelation(&r1); err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log("first insert success")
-	r2 := Relation{
-		UserID:   2,
-		FollowID: 4,
-	}
-	if err := CreateRelation(&r2); err != nil {
-		t.Error(err)
-		return
-	}
-}
+//func TestDuplicationCreateRelation(t *testing.T) {
+//	r1 := Relation{
+//		UserID:   2,
+//		FollowID: 4,
+//	}
+//	if err := CreateRelation(&r1); err != nil {
+//		t.Error(err)
+//		return
+//	}
+//	t.Log("first insert success")
+//	r2 := Relation{
+//		UserID:   2,
+//		FollowID: 4,
+//	}
+//	if err := CreateRelation(&r2); err != nil {
+//		t.Error(err)
+//		return
+//	}
+//}
 
 func TestDeleteRelationWithCount(t *testing.T) {
 	if err := DeleteRelationWithCount(7, 3); err != nil {
