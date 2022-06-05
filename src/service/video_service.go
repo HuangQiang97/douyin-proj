@@ -16,7 +16,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 	"time"
 )
@@ -39,7 +38,7 @@ func SaveFile(file *multipart.FileHeader, dst string) error {
 	return err
 }
 
-// GetLocalIp 获得本机IP
+// GetOutIp 获得本机外网IP
 func GetOutIp() (ip string, err error) {
 	// 获得地址
 	response, err := http.Get("http://ip.dhcp.cn/?ip") // 获取外网 IP
@@ -61,8 +60,13 @@ func GetLocalIp() (string, error) {
 		return ips, err
 	}
 
-	for _, a := range addrs {
-		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+	//for _, a := range addrs {
+	//	if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
+	//		return ipnet.IP.String(), nil
+	//	}
+	//}
+	for i := len(addrs) - 1; i >= 0; i-- {
+		if ipnet, ok := addrs[i].(*net.IPNet); ok && !ipnet.IP.IsLoopback() && ipnet.IP.To4() != nil {
 			return ipnet.IP.String(), nil
 		}
 	}
@@ -98,12 +102,13 @@ func GenCover(videoPath, snapshotPath string, frameNum int) (err error) {
 
 // SaveVideo 保存视频
 func SaveVideo(file *multipart.FileHeader, uId uint, title string) (err error) {
-	// 剪切路径，防止过长数据库保存失败
-	fileName := path.Clean(strings.Trim(file.Filename, "/"))
+	// 名称转16进制防止注入
+	fileName := fmt.Sprintf("%x", file.Filename)
+	// 截断防止过长数据库无法保存
 	if len(fileName) > 36 {
 		fileName = fileName[len(fileName)-36:]
 	}
-	fileId := fmt.Sprintf("%d_%d_%s", uId, time.Now().Unix(), fileName)
+	fileId := fmt.Sprintf("%d_%d_%s", uId, time.Now().UnixNano(), fileName)
 	videoPath := "./upload/video/" + fileId
 	//保存视频
 	if err = SaveFile(file, videoPath); err != nil {
@@ -118,7 +123,7 @@ func SaveVideo(file *multipart.FileHeader, uId uint, title string) (err error) {
 		return err
 	}
 	// TODO
-	ip = "10.192.18.194"
+	//ip = "10.192.18.194"
 
 	videoUrl := "http://" + ip + ":" + config.ServerConfig.HTTP_PORT + videoPath[1:]
 	//videoUrl := videoPath[1:]
@@ -157,7 +162,8 @@ func SaveVideo(file *multipart.FileHeader, uId uint, title string) (err error) {
 }
 
 // GetVideoList 获得用户视频列表
-func GetVideoList(authorId uint) (videoList []types.Video, err error) {
+// authorId:要查询的用户,uid:当前登录用户
+func GetVideoList(authorId, uid uint) (videoList []types.Video, err error) {
 	// 获取用户信息
 	user, err := repository.GetUserById(authorId)
 	if err != nil {
@@ -177,15 +183,18 @@ func GetVideoList(authorId uint) (videoList []types.Video, err error) {
 		Name:          user.UserName,
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FansCount,
-		IsFollow:      false,
+		IsFollow: repository.GetRelation(&repository.Relation{
+			UserID:   uid,
+			FollowID: authorId,
+		}),
 	}
 
 	videoList = make([]types.Video, 0, len(videos))
 	for _, v := range videos {
-		// 查询用户是否给自己的视频点赞过
+		// 查询当前用户是否给视频点赞过
 		isFavorite := repository.IsFavorite(&repository.Favorite{
-			UserID:  authorId,
-			VideoID: authorId,
+			UserID:  uid,
+			VideoID: v.ID,
 		})
 		// 填充视频信息
 		videoList = append(videoList, types.Video{

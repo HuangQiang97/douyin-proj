@@ -15,7 +15,7 @@ func Publish(c *gin.Context) {
 	// 请求参数获取
 	var publishRequest = types.PublishRequest{}
 	if err := c.ShouldBind(&publishRequest); err != nil {
-		log.Printf("反序列化上传视频请求失败。token:%s,title:%s\n", publishRequest.Token, publishRequest.Title)
+		log.Printf("反序列化上传视频请求失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()})
 		return
 	}
@@ -23,7 +23,7 @@ func Publish(c *gin.Context) {
 	// 校验jwt token
 	uId, err := util.VerifyToken(publishRequest.Token)
 	if err != nil {
-		log.Println("登录失败")
+		log.Printf("登录失败，err:%s\n", err)
 		c.JSON(http.StatusOK, types.UserResponse{
 			Response: ErrNo.AuthFailedResp,
 		})
@@ -37,22 +37,23 @@ func Publish(c *gin.Context) {
 		c.JSON(http.StatusOK, ErrNo.VideoUploadFailedResp)
 		return
 	}
-
 	c.JSON(http.StatusOK, ErrNo.SuccessResp)
+	log.Printf("保存文件成功。uid:%d\n", uId)
+
 }
 
-// PublishList all users have same publish video list
+// PublishList 获取用户发表过的视频
 func PublishList(c *gin.Context) {
 	var videoListRequest = types.VideoListRequest{}
 	if err := c.ShouldBind(&videoListRequest); err != nil {
-		log.Printf("反序列化获取视频列表请求失败。uid:%d,token:%s\n", videoListRequest.UserId, videoListRequest.Token)
+		log.Printf("反序列化获取视频列表请求失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()})
 		return
 	}
 	// 校验jwt token
 	uId, err := util.VerifyToken(videoListRequest.Token)
 	if err != nil {
-		log.Println("登录失败")
+		log.Printf("登录失败，err:%s\n", err)
 		c.JSON(http.StatusOK, types.VideoListResponse{
 			Response: ErrNo.AuthFailedResp,
 		})
@@ -60,7 +61,7 @@ func PublishList(c *gin.Context) {
 	}
 
 	// 获得视频列表
-	videoList, err := service.GetVideoList(uId)
+	videoList, err := service.GetVideoList(uint(videoListRequest.UserId), uId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.VideoListResponse{
 			Response: types.Response{
@@ -74,4 +75,6 @@ func PublishList(c *gin.Context) {
 		Response:  ErrNo.SuccessResp,
 		VideoList: videoList,
 	})
+	log.Printf("获得用户发布过视频列表成功。uid:%d\n", videoListRequest.UserId)
+
 }

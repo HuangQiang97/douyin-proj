@@ -68,3 +68,9 @@ func GetVideoTimeDesc(lastTime int64) ([]Video, error) {
 	err := DB.Table("video").Where("created_at < ? ", lastTime).Order("created_at DESC").Limit(30).Find(&videoList).Error
 	return videoList, err
 }
+
+func ExistVideo(id *uint) bool {
+	count := int64(0)
+	DB.Table("video").Where("id=? ", id).Count(&count)
+	return count > 0
+}
