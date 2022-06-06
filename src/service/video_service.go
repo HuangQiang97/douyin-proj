@@ -17,6 +17,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
@@ -101,8 +102,24 @@ func GenCover(videoPath, snapshotPath string, frameNum int) (err error) {
 	return nil
 }
 
+func isVideo(suffix string) bool {
+	videoTypes := []string{"avi", "wmv", "mpeg", "mp4", "m4v", "mov", "asf", "flv", "f4v", "rmvb", "rm", "3gp", "vob", "asx", "dat", "mkv", "webm", "3g2", "mpg", "mpe", "ts", "vob", "dat", "mkv", "lavf", "cpk", "dirac", "ram", "qt", "fli", "flc", "mod", "wmv", "avi", "dat", "asf", "mpeg", "mpg", " rm", "rmvb", "ram", "flv", "mp4", "3gp", " mov", "divx", "dv", "vob", "mkv", "qt", " cpk", "fli", "flc", "f4v", "m4v"}
+	set := make(map[string]struct{}, len(videoTypes))
+	for _, v := range videoTypes {
+		set[v] = struct{}{}
+	}
+	_, ok := set[suffix]
+	return ok
+}
+
 // SaveVideo 保存视频
 func SaveVideo(file *multipart.FileHeader, uId uint, title string) (err error) {
+
+	// 文件合法性判断
+	if !isVideo(path.Ext(file.Filename)[1:]) {
+		log.Printf("文件非视频文件。name:%s\n", file.Filename)
+		return errors.New("文件非视频文件")
+	}
 	// 名称转16进制防止注入
 	fileName := fmt.Sprintf("%x", file.Filename)
 	// 截断防止过长数据库无法保存
@@ -124,7 +141,7 @@ func SaveVideo(file *multipart.FileHeader, uId uint, title string) (err error) {
 		return err
 	}
 	// TODO
-	//ip = "10.192.18.194"
+	ip = "10.192.10.109"
 
 	videoUrl := "http://" + ip + ":" + config.ServerConfig.HTTP_PORT + videoPath[1:]
 	//videoUrl := videoPath[1:]
