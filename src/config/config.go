@@ -21,6 +21,12 @@ type MySQLInfo struct {
 	MaxOpenConns int
 	Loc          string
 }
+type RedisInfo struct {
+	Addr     string
+	Port     string
+	Password string
+	DB       string
+}
 
 type ServerInfo struct {
 	HTTP_PORT string
@@ -33,6 +39,7 @@ var (
 	ServerConfig *ServerInfo
 	SecretKey    string
 	Salt         string
+	RedisConfig  *RedisInfo
 )
 
 func Init(path string) error {
@@ -49,6 +56,7 @@ func Init(path string) error {
 	initLog()
 	SecretKey = cfg.Section("jwt").Key("secretKey").String()
 	Salt = cfg.Section("crypto").Key("salt").String()
+	initRedis(cfg)
 	log.Println("初始化配置成功")
 	return nil
 }
@@ -67,4 +75,9 @@ func initLog() {
 	logFile, _ := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
 	log.SetOutput(logFile) // 将文件设置为log输出的文件
 	log.SetFlags(log.LstdFlags | log.Lshortfile | log.LUTC)
+}
+
+func initRedis(cfg *ini.File) error {
+	RedisConfig = new(RedisInfo)
+	return cfg.Section("redis").MapTo(RedisConfig)
 }
