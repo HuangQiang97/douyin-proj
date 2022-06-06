@@ -35,7 +35,7 @@ func RelationAction(c *gin.Context) {
 	case 1:
 		if err := service.CreateRelation(uId, uint(relationRequest.ToUserId)); err != nil {
 			c.JSON(http.StatusOK, types.RelationResponse{
-				Response: types.Response{StatusCode: ErrNo.UnknownError, StatusMsg: err.Error()},
+				Response: types.Response{StatusCode: ErrNo.RelationAddFailed, StatusMsg: err.Error()},
 			})
 			return
 		}
@@ -44,7 +44,7 @@ func RelationAction(c *gin.Context) {
 	case 2:
 		if err := service.DeleteRelation(uId, uint(relationRequest.ToUserId)); err != nil {
 			c.JSON(http.StatusOK, types.RelationResponse{
-				Response: types.Response{StatusCode: ErrNo.UnknownError, StatusMsg: err.Error()},
+				Response: types.Response{StatusCode: ErrNo.RelationDeleteFailed, StatusMsg: err.Error()},
 			})
 			return
 		}
