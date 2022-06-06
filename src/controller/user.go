@@ -128,6 +128,7 @@ func UserInfo(c *gin.Context) {
 		c.JSON(http.StatusOK, types.UserResponse{
 			Response: ErrNo.UserNotExistedResp,
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, types.UserResponse{
