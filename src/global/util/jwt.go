@@ -2,7 +2,6 @@ package util
 
 import (
 	"douyin-proj/src/config"
-	"douyin-proj/src/repository"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -16,7 +15,7 @@ type Claims struct {
 
 // ReleaseToken 生成token
 func ReleaseToken(id uint) (string, error) {
-	expireTime := time.Now().Add(1 * time.Hour) // token过期时间
+	expireTime := time.Now().Add(1 * time.Second) // token过期时间
 	claims := &Claims{
 		UserId: id,
 		StandardClaims: jwt.StandardClaims{
@@ -37,8 +36,7 @@ func VerifyToken(tokenString string) (uint, error) {
 	token, err := jwt.ParseWithClaims(tokenString, Claims, func(token *jwt.Token) (i interface{}, err error) {
 		return jwtKey, nil
 	})
-	// token 合法并且该用户在数据库中存在
-	if token.Valid && repository.ExistUser(Claims.UserId) {
+	if err == nil && token.Valid {
 		return Claims.UserId, nil
 	}
 	return 0, err

@@ -32,6 +32,7 @@ func TestVerifyToken(t *testing.T) {
 		t.Errorf("releaseToen error = %v", err)
 		return
 	}
+	token = "dsff"
 	parseid, err := VerifyToken(token)
 	if err != nil {
 		t.Errorf("verify faild = %v", err)
