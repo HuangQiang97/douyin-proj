@@ -4,6 +4,7 @@ import (
 	"douyin-proj/src/global/util"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"errors"
 	"log"
 )
 
@@ -28,6 +29,12 @@ func UndoFavorite(userId uint, videoId uint) error {
 
 // GetFavoriteVideoListByUserId 根据qid获得用户点赞过视频,uId为当前登录用户
 func GetFavoriteVideoListByUserId(qId, uId uint) ([]types.Video, error) {
+
+	// 用户合法性判断
+	if !repository.ExistUser(qId) {
+		log.Printf("目标用户不存在。uId:%d\n", qId)
+		return nil, errors.New("目标用户不存在")
+	}
 
 	videoIds, err := repository.GetFavoriteVideoIdsByUserId(qId)
 	if err != nil {
