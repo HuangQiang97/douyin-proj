@@ -14,8 +14,8 @@ const (
 	NotInFavorite        int32 = 8
 	CommentAddFailed     int32 = 9
 	CommentDeleteFailed  int32 = 10
-	RelationAddFailed    int32 = 12
-	RelationDeleteFailed int32 = 13
+	RelationAddFailed    int32 = 11
+	RelationDeleteFailed int32 = 12
 	UnknownError         int32 = 255
 )
 
