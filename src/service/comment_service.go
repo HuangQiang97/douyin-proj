@@ -4,6 +4,7 @@ import (
 	"douyin-proj/src/global/util"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"errors"
 	"log"
 	"time"
 )
@@ -40,7 +41,7 @@ func CreateComment(userId uint, videoId uint, content string) (*types.Comment, e
 	if err != nil {
 		return nil, err
 	}
-	if &comment == nil && util.CommentsExist(videoId) {
+	if util.CommentsExist(videoId) {
 		util.AddComment(videoId, &comment)
 		util.VideoCommIncr(videoId)
 	}
@@ -107,6 +108,10 @@ func DeleteCommentById(userId uint, videoId uint, commentId uint) (*types.User, 
 
 // GetCommentByVideoId 时间倒叙获取评论
 func GetCommentByVideoId(videoId uint, uId uint) ([]types.Comment, error) {
+
+	if !repository.ExistVideo(&videoId) {
+		return nil, errors.New("视频不存在")
+	}
 
 	// 获取评论
 	var comments []repository.Comment
