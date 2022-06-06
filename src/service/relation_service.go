@@ -4,6 +4,7 @@ import (
 	"douyin-proj/src/global/util"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"errors"
 	"log"
 )
 
@@ -34,6 +35,12 @@ func DeleteRelation(userId, followId uint) error {
 }
 
 func GetFollowList(userId, uId uint) ([]types.User, error) {
+
+	// 用户合法性判断
+	if !repository.ExistUser(userId) {
+		log.Printf("目标用户不存在。uId:%d\n", userId)
+		return nil, errors.New("目标用户不存在")
+	}
 
 	followIds, err := repository.GetFollowIds(userId)
 	users := make([]repository.User, 0, len(followIds))
@@ -71,6 +78,12 @@ func GetFollowList(userId, uId uint) ([]types.User, error) {
 }
 
 func GetFansList(userId, uId uint) ([]types.User, error) {
+
+	// 用户合法性判断
+	if !repository.ExistUser(userId) {
+		log.Printf("目标用户不存在。uId:%d\n", userId)
+		return nil, errors.New("目标用户不存在")
+	}
 
 	followerIds, err := repository.GetFollowerIds(userId)
 	users := make([]repository.User, 0, len(followerIds))
