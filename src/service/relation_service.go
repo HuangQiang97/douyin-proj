@@ -3,6 +3,7 @@ package service
 import (
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"errors"
 	"log"
 )
 
@@ -17,6 +18,13 @@ func DeleteRelation(userId, followId uint) error {
 }
 
 func GetFollowList(userId, uId uint) ([]types.User, error) {
+
+	// 用户合法性判断
+	if !repository.ExistUser(userId) {
+		log.Printf("目标用户不存在。uId:%d\n", userId)
+		return nil, errors.New("目标用户不存在")
+	}
+
 	users, err := repository.GetFollow(userId)
 	if err != nil {
 		log.Printf("获取用户关注用户失败。uId:%d,err:%s\n", userId, err)
@@ -38,6 +46,13 @@ func GetFollowList(userId, uId uint) ([]types.User, error) {
 }
 
 func GetFansList(userId, uId uint) ([]types.User, error) {
+
+	// 用户合法性判断
+	if !repository.ExistUser(userId) {
+		log.Printf("目标用户不存在。uId:%d\n", userId)
+		return nil, errors.New("目标用户不存在")
+	}
+
 	users, err := repository.GetFans(userId)
 	if err != nil {
 		log.Printf("获取用户粉丝失败。uId:%d,err:%s\n", userId, err)

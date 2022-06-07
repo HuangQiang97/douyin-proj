@@ -3,6 +3,7 @@ package service
 import (
 	"douyin-proj/src/repository"
 	"douyin-proj/src/types"
+	"errors"
 	"log"
 	"time"
 )
@@ -73,6 +74,10 @@ func DeleteCommentById(userId uint, videoId uint, commentId uint) (*types.User, 
 
 // GetCommentByVideoId 时间倒叙获取评论
 func GetCommentByVideoId(videoId uint, uId uint) ([]types.Comment, error) {
+	// 视频合法性判断
+	if !repository.ExistVideo(&videoId) {
+		return nil, errors.New("视频不存在")
+	}
 	// 获取评论
 	comments, err := repository.GetCommentIdsByVideoId(videoId)
 	if err != nil {
