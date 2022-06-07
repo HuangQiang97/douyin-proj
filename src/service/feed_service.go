@@ -32,10 +32,14 @@ func GetFeedVideos(lastTime int64, isAuth bool, uid uint) (feedVideos []types.Vi
 		return feedVideos, nextTime, err
 	}
 
-	// 下次拉取视频时的截至时间
-	nextTime = int64(videoList[len(videoList)-1].CreatedAt)
 	// 返回的视频集合
 	feedVideos = make([]types.Video, 0, len(videoList))
+	// 不存在满足条件的视频
+	if len(videoList) == 0 {
+		return feedVideos, lastTime, nil
+	}
+	// 下次拉取视频时的截至时间
+	nextTime = int64(videoList[len(videoList)-1].CreatedAt)
 	for _, video := range videoList {
 		// 填充视频作者信息
 		authorId := video.AuthorID
