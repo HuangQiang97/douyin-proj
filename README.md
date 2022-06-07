@@ -26,7 +26,6 @@
 HTTP_PORT = *******
 HTTP_HOST = *******
 MODE = debug
-
 [mysql]
 TYPE = mysql
 USER = root
@@ -39,10 +38,8 @@ ParseTime = true
 MaxIdleConns = 20
 MaxOpenConns = 100
 Loc = Local
-
 [jwt]
 secretKey = *********
-
 [crypto]
 salt = *********
 ```
