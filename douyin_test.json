@@ -1,0 +1,461 @@
+{
+    "info": {
+        "_postman_id": "eed7cba5-02e0-49bd-bed7-00e4a805d5e9",
+        "name": "douyin-线上测试",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "19278451"
+    },
+    "item": [
+        {
+            "name": "ping",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "username",
+                            "value": "gsz",
+                            "type": "text"
+                        },
+                        {
+                            "key": "password",
+                            "value": "123456",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "localhost:8532/ping",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "ping"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "user/login",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/user/login?username=gsz07&password=123456",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "user",
+                        "login"
+                    ],
+                    "query": [
+                        {
+                            "key": "username",
+                            "value": "gsz07"
+                        },
+                        {
+                            "key": "password",
+                            "value": "123456"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "user/register",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/user/register?username=gsz053107&password=123456",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "user",
+                        "register"
+                    ],
+                    "query": [
+                        {
+                            "key": "username",
+                            "value": "gsz053107"
+                        },
+                        {
+                            "key": "password",
+                            "value": "123456"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "user/userInfo",
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "username",
+                            "value": "gsz04",
+                            "type": "text"
+                        },
+                        {
+                            "key": "password",
+                            "value": "123456",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "localhost:8532/douyin/user?user_id=6&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "user"
+                    ],
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": "6"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "video/publish",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "data",
+                            "type": "file",
+                            "src": "/E:/Go/DouYinProject/douyin-proj/upload/testvideo.txt"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                            "type": "text"
+                        },
+                        {
+                            "key": "title",
+                            "value": "郭世哲001",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "localhost:8532/douyin/publish/action/",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "publish",
+                        "action",
+                        ""
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "video/list",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/publish/list?user_id=3&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "publish",
+                        "list"
+                    ],
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": "3"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "relation",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/relation/action/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE&to_user_id=17&action_type=1",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "relation",
+                        "action",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        },
+                        {
+                            "key": "to_user_id",
+                            "value": "17"
+                        },
+                        {
+                            "key": "action_type",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "relation/follow/list",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/relation/follow/list/?user_id=3&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "relation",
+                        "follow",
+                        "list",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": "3"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "relation/follower/list",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/relation/follower/list/?user_id=3&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "relation",
+                        "follower",
+                        "list",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": "3"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "favorite/action",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/favorite/action/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE&video_id=31&action_type=1",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "favorite",
+                        "action",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        },
+                        {
+                            "key": "video_id",
+                            "value": "31"
+                        },
+                        {
+                            "key": "action_type",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "favorite/list",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/favorite/list?user_id=2&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "favorite",
+                        "list"
+                    ],
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": "2"
+                        },
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "comment/action",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/comment/action/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE&video_id=31&action_type=1&comment_text=qweee&comment_id=8",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "comment",
+                        "action",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        },
+                        {
+                            "key": "video_id",
+                            "value": "31"
+                        },
+                        {
+                            "key": "action_type",
+                            "value": "1"
+                        },
+                        {
+                            "key": "comment_text",
+                            "value": "qweee"
+                        },
+                        {
+                            "key": "comment_id",
+                            "value": "8"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "comment/list",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "localhost:8532/douyin/comment/list?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE&video_id=31",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8532",
+                    "path": [
+                        "douyin",
+                        "comment",
+                        "list"
+                    ],
+                    "query": [
+                        {
+                            "key": "token",
+                            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImV4cCI6MTY1NDQzNzg2MSwiaWF0IjoxNjU0MzUxNDYxLCJpc3MiOiJkb3V5aW4iLCJzdWIiOiJ1c2VyIHRva2VuIn0.m5OO1vcOrjnubaiulLaQr8080lSr6h125lrzhr9omfE"
+                        },
+                        {
+                            "key": "video_id",
+                            "value": "31"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
