@@ -7,6 +7,7 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/satori/go.uuid v1.2.0
 	github.com/u2takey/ffmpeg-go v0.4.1
 	gopkg.in/ini.v1 v1.66.6
 	gorm.io/driver/mysql v1.3.4

@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"douyin-proj/src/global/ErrNo"
-	"douyin-proj/src/global/util"
+	"douyin-proj/src/config"
+	"douyin-proj/src/server/middleware"
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
@@ -16,16 +16,16 @@ func RelationAction(c *gin.Context) {
 	if err := c.ShouldBind(&relationRequest); err != nil {
 		log.Printf("反序列化增删关注请求失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.RelationResponse{
-			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
+			Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
 	// 校验jwt token
-	uId, err := util.VerifyToken(relationRequest.Token)
+	uId, err := middleware.VerifyToken(relationRequest.Token)
 	if err != nil {
 		log.Printf("登录失败，err:%s\n", err)
 		c.JSON(http.StatusOK, types.UserResponse{
-			Response: ErrNo.AuthFailedResp,
+			Response: config.AuthFailedResp,
 		})
 		return
 	}
@@ -35,7 +35,7 @@ func RelationAction(c *gin.Context) {
 	case 1:
 		if err := service.CreateRelation(uId, uint(relationRequest.ToUserId)); err != nil {
 			c.JSON(http.StatusOK, types.RelationResponse{
-				Response: types.Response{StatusCode: ErrNo.RelationAddFailed, StatusMsg: err.Error()},
+				Response: types.Response{StatusCode: config.RelationAddFailed, StatusMsg: err.Error()},
 			})
 			return
 		}
@@ -44,7 +44,7 @@ func RelationAction(c *gin.Context) {
 	case 2:
 		if err := service.DeleteRelation(uId, uint(relationRequest.ToUserId)); err != nil {
 			c.JSON(http.StatusOK, types.RelationResponse{
-				Response: types.Response{StatusCode: ErrNo.RelationDeleteFailed, StatusMsg: err.Error()},
+				Response: types.Response{StatusCode: config.RelationDeleteFailed, StatusMsg: err.Error()},
 			})
 			return
 		}
@@ -52,7 +52,7 @@ func RelationAction(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, types.RelationResponse{
-		Response: ErrNo.SuccessResp,
+		Response: config.SuccessResp,
 	})
 	return
 }
@@ -63,32 +63,31 @@ func FollowList(c *gin.Context) {
 	if err := c.ShouldBind(&userFollowListRequest); err != nil {
 		log.Printf("反序列化获取关注列表请求失败。err:%s\n", err)
 		c.JSON(http.StatusOK, types.UserFollowListResponse{
-			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
+			Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
 	// 校验jwt token
-	uId, err := util.VerifyToken(userFollowListRequest.Token)
+	uId, err := middleware.VerifyToken(userFollowListRequest.Token)
 	if err != nil {
 		log.Printf("登录失败，err:%s\n", err)
 		c.JSON(http.StatusOK, types.UserResponse{
-			Response: ErrNo.AuthFailedResp,
+			Response: config.AuthFailedResp,
 		})
 		return
 	}
-	followList, err := service.GetFollowList(uint(userFollowListRequest.UserId), uId)
+	followList, err := service.GetFollowingList(uint(userFollowListRequest.UserId), uId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserFollowListResponse{
-			Response: types.Response{StatusCode: ErrNo.UnknownError, StatusMsg: err.Error()},
+			Response: types.Response{StatusCode: config.UnknownError, StatusMsg: err.Error()},
 		})
 		return
 	}
 	c.JSON(http.StatusOK, types.UserFollowListResponse{
-		Response: ErrNo.SuccessResp,
+		Response: config.SuccessResp,
 		UserList: followList,
 	})
 	log.Printf("获取关注列表成功，uid:%d\n", uId)
-
 }
 
 // FollowerList all users have same follower list
@@ -96,29 +95,27 @@ func FollowerList(c *gin.Context) {
 	var userFansListRequest = types.UserFansListRequest{}
 	if err := c.ShouldBind(&userFansListRequest); err != nil {
 		c.JSON(http.StatusOK, types.UserFansListResponse{
-			Response: types.Response{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()},
+			Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 		})
 		return
 	}
-
 	// 校验jwt token
-	uId, err := util.VerifyToken(userFansListRequest.Token)
+	uId, err := middleware.VerifyToken(userFansListRequest.Token)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserResponse{
-			Response: ErrNo.AuthFailedResp,
+			Response: config.AuthFailedResp,
 		})
 		return
 	}
-
-	fans, err := service.GetFansList(uint(userFansListRequest.UserId), uId)
+	fans, err := service.GetFollowerList(uint(userFansListRequest.UserId), uId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.UserFansListResponse{
-			Response: types.Response{StatusCode: ErrNo.UnknownError, StatusMsg: err.Error()},
+			Response: types.Response{StatusCode: config.UnknownError, StatusMsg: err.Error()},
 		})
 		return
 	}
 	c.JSON(http.StatusOK, types.UserFansListResponse{
-		Response: ErrNo.SuccessResp,
+		Response: config.SuccessResp,
 		UserList: fans,
 	})
 }

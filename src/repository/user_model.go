@@ -103,15 +103,6 @@ func GetUserResponse(qid uint, uid uint) (user *User, isFollow bool) {
 	return &userresp.User, userresp.isFollow
 }
 
-func GetUserInfo(qid uint, uid uint) (*User, bool, error) {
-	user := User{}
-	if err := DB.Find(&user, qid).Error; err != nil {
-		return nil, false, err
-	}
-	isFollow := GetRelation(&Relation{UserID: uid, FollowID: qid})
-	return &user, isFollow, nil
-}
-
 func ExistUser(id uint) bool {
 	count := int64(0)
 	DB.Table("user").Where("id=? ", id).Count(&count)

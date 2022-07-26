@@ -40,7 +40,7 @@ func TestDeleteRelationWithCount(t *testing.T) {
 }
 
 func TestGetFollow(t *testing.T) {
-	users, err := GetFollow(20)
+	users, err := GetFollowingList(20)
 	if err != nil {
 		t.Error(err)
 		return
@@ -51,7 +51,7 @@ func TestGetFollow(t *testing.T) {
 }
 
 func TestGetFans(t *testing.T) {
-	users, err := GetFans(20)
+	users, err := GetFollowerList(20)
 	if err != nil {
 		t.Error(err)
 		return

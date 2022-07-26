@@ -19,7 +19,7 @@ func (r *Relation) TableName() string {
 //	return DB.Create(r).Error
 //}
 
-// GetRelation 是否存在点赞关系
+// GetRelation 是否存在关注关系
 func GetRelation(r *Relation) bool {
 	count := int64(0)
 	DB.Table("relation").Where("user_id=? and follow_id=?", r.UserID, r.FollowID).Count(&count)
@@ -94,27 +94,27 @@ func DeleteRelationWithCount(userId, followId uint) error {
 	})
 }
 
-// GetFollow 获得关注用户
-func GetFollow(userId uint) ([]User, error) {
+// GetFollowingList 获得关注用户
+func GetFollowingList(userId uint) ([]User, error) {
 	var users []User
 	err := DB.Table("user").Joins("join relation as r on r.follow_id = user.id  and r.user_id = ? ", userId).Find(&users).Error
 	return users, err
 }
 
-func GetFollowIds(userId uint) ([]int, error) {
-	var ids []int
+func GetFollowingIds(userId uint) ([]uint, error) {
+	var ids []uint
 	err := DB.Table("relation").Where("user_id=?", userId).Select("follow_id").Find(&ids).Error
 	return ids, err
 }
 
-func GetFollowerIds(userId uint) ([]int, error) {
-	var ids []int
+func GetFollowerIds(userId uint) ([]uint, error) {
+	var ids []uint
 	err := DB.Table("relation").Where("follow_id=?", userId).Select("user_id").Find(&ids).Error
 	return ids, err
 }
 
-// GetFans 获得粉丝
-func GetFans(userId uint) ([]User, error) {
+// GetFollowerList 获得粉丝
+func GetFollowerList(userId uint) ([]User, error) {
 	var users []User
 	err := DB.Table("user").Joins("join relation as r on r.user_id = user.id  and r.follow_id = ? ", userId).Find(&users).Error
 	return users, err

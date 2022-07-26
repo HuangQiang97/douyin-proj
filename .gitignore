@@ -3,7 +3,6 @@
 #
 # Binaries for programs and plugins
 *.exe
-*.exe~
 *.dll
 *.so
 *.dylib
@@ -23,5 +22,3 @@ upload/cover/*.jpeg
 
 # Go workspace file
 go.work
-
-.idea

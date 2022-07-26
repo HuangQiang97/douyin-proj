@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"douyin-proj/src/global/ErrNo"
-	"douyin-proj/src/global/util"
+	"douyin-proj/src/config"
+	"douyin-proj/src/server/middleware"
 	"douyin-proj/src/service"
 	"douyin-proj/src/types"
 	"github.com/gin-gonic/gin"
@@ -17,7 +17,7 @@ func Feed(c *gin.Context) {
 	var feedRequest = types.FeedRequest{}
 	if err := c.ShouldBind(&feedRequest); err != nil {
 		log.Printf("反序列化获取视频流请求失败。err:%s\n", err)
-		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: ErrNo.ParamInvalid, StatusMsg: err.Error()})
+		c.JSON(http.StatusOK, types.PublishResponse{StatusCode: config.ParamInvalid, StatusMsg: err.Error()})
 		return
 	}
 	// 截至时间
@@ -28,32 +28,29 @@ func Feed(c *gin.Context) {
 	// 鉴权
 	token := feedRequest.Token
 	isAuth := false
-	uid := uint(0)
-
+	userId := uint(0)
 	if token != "" {
-		_uid, err := util.VerifyToken(token)
+		_uid, err := middleware.VerifyToken(token)
 		if err != nil {
 			log.Printf("登录失败。err:%s\n", err)
-			c.JSON(http.StatusOK, types.FeedResponse{Response: ErrNo.AuthFailedResp})
+			c.JSON(http.StatusOK, types.FeedResponse{Response: config.AuthFailedResp})
 			return
 		}
-		uid = _uid
+		userId = _uid
 		isAuth = true
 	}
 	// 获得视频流
-	feedVideos, nextTime, err := service.GetFeedVideos(lastTime, isAuth, uid)
+	feedVideos, nextTime, err := service.GetFeedVideos(lastTime, isAuth, userId)
 	if err != nil {
-		c.JSON(http.StatusOK, types.FeedResponse{Response: ErrNo.UnknownErrorResp})
+		c.JSON(http.StatusOK, types.FeedResponse{Response: config.UnknownErrorResp})
 		return
 	}
-
 	// 返回请求
 	c.JSON(http.StatusOK, types.FeedResponse{
-		Response:  ErrNo.SuccessResp,
+		Response:  config.SuccessResp,
 		VideoList: feedVideos,
 		NextTime:  nextTime,
 	})
 	log.Printf("根据截至时间获取视频流成功。lastTime:%d\n", lastTime)
-
 	return
 }

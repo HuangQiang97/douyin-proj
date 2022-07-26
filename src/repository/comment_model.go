@@ -18,11 +18,6 @@ func (c *Comment) TableName() string {
 	return "comment"
 }
 
-//func CreateComment(comment *Comment) error {
-//	comment.CreateDate = uint64(time.Now().Unix())
-//	return DB.Create(&comment).Error
-//}
-
 // CreateCommentWithCount 添加评论并更新视频评论数
 func CreateCommentWithCount(comment *Comment) error {
 	return DB.Transaction(func(tx *gorm.DB) error {
@@ -65,23 +60,16 @@ func DeleteComment(userId uint, videoId uint, commentId uint) error {
 	})
 }
 
-//func GetCommentById(id uint) (*Comment, error) {
-//	comment := Comment{}
-//	if err := DB.First(&comment, id).Error; err != nil {
-//		return nil, err
-//	}
-//	return &comment, nil
-//}
+// GetCommentById 根据Id获得评论
+func GetCommentById(id uint) (*Comment, error) {
+	comment := Comment{}
+	if err := DB.First(&comment, id).Error; err != nil {
+		return nil, err
+	}
+	return &comment, nil
+}
 
-//func GetCommentsByIds(ids []uint) ([]*Comment, error) {
-//	var comments []*Comment
-//	if err := DB.Find(&comments, ids).Error; err != nil {
-//		return nil, err
-//	}
-//	return comments, nil
-//}
-
-// GetCommentIdsByVideoId 获取评论
+// GetCommentsByVideoId 获取视频Id获得全部评论
 func GetCommentsByVideoId(videoId uint) ([]Comment, error) {
 	var comments []Comment
 	db := DB.Session(&gorm.Session{}).Table("comment").Where("video_id = ?", videoId).Order("create_date DESC").Find(&comments)
@@ -91,8 +79,12 @@ func GetCommentsByVideoId(videoId uint) ([]Comment, error) {
 	return comments, nil
 }
 
-//func ExistComment(commentId *uint, uid *uint, videoId *uint) bool {
-//	count := int64(0)
-//	DB.Table("comment").Where("id=? and user_id=? and video_id=?", commentId, uid, videoId).Count(&count)
-//	return count > 0
-//}
+// GetCommentIdsByVideoId 获取视频Id获得全部评论Id
+func GetCommentIdsByVideoId(videoId uint) ([]uint, error) {
+	var comments []uint
+	db := DB.Session(&gorm.Session{}).Table("comment").Select("id").Where("video_id = ?", videoId).Order("create_date DESC").Find(&comments)
+	if db.Error != nil {
+		return nil, db.Error
+	}
+	return comments, nil
+}

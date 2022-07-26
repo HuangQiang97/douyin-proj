@@ -4,6 +4,7 @@ import (
 	"gopkg.in/ini.v1"
 	"log"
 	"os"
+	"time"
 )
 
 const DefaultPath string = "resources/application.ini"
@@ -41,6 +42,16 @@ var (
 	Salt         string
 	RedisConfig  *RedisInfo
 )
+
+// PlayUrlPrefix 存储的图片和视频的链接
+const PlayUrlPrefix = "http://10.192.58.230:8532/upload/video/"
+const CoverUrlPrefix = "http://10.192.58.230:8532/upload/cover/"
+const VideoSavePrefix = "./upload/video/"
+const CoverSavePrefix = "./upload/cover/"
+const MaxMsgCount = 100
+
+// RedisExpireTime redis缓存过期时间
+const RedisExpireTime = 4 * time.Hour
 
 func Init(path string) error {
 	cfg, err := ini.Load(path)

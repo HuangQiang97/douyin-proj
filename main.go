@@ -5,6 +5,7 @@ import (
 	"douyin-proj/src/database"
 	"douyin-proj/src/repository"
 	"douyin-proj/src/server"
+	"douyin-proj/src/server/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,12 +23,10 @@ func main() {
 }
 
 func Init() error {
-	if err := config.Init(config.DefaultPath); err != nil {
-		return err
-	}
-	if err := database.Init(); err != nil {
-		return err
-	}
+	config.Init(config.DefaultPath)
+	database.Init()
 	repository.Init()
+	go middleware.InitFfmpeg()
+	middleware.InitRedis()
 	return nil
 }

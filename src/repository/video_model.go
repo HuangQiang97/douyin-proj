@@ -49,8 +49,8 @@ func GetVideoByAuthorId(authorId uint) ([]Video, error) {
 	return videos, nil
 }
 
-func GetVideoIdsByAuthorId(authorId uint) ([]int, error) {
-	var ids []int
+func GetVideoIdsByAuthorId(authorId uint) ([]uint, error) {
+	var ids []uint
 	err := DB.Table("video").Where("author_id = ?", authorId).Select("id").Find(&ids).Error
 	if err != nil {
 		return nil, err
