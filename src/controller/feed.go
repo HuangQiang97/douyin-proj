@@ -40,7 +40,7 @@ func Feed(c *gin.Context) {
 		isAuth = true
 	}
 	// 获得视频流
-	feedVideos, nextTime, err := service.GetFeedVideos(lastTime, isAuth, userId)
+	feedVideos, nextTime, err := service.GetFeedVideosWithRecommendation(lastTime, isAuth, userId)
 	if err != nil {
 		c.JSON(http.StatusOK, types.FeedResponse{Response: config.UnknownErrorResp})
 		return

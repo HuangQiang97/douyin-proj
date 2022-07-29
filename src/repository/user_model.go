@@ -56,16 +56,14 @@ func GetUserByName(username string) (*User, error) {
 	return &user, nil
 }
 
-func GetUserResponse(qid uint, uid uint) (user *User, isFollow bool) {
-	subquery1 := DB.Table("user").Where("id = ?", qid).Select("*")
-	subquery2 := DB.Table("relation").Where("user_id = ? AND follow_id = ?", uid, qid).Select("count(1) as is_follow")
-	var userresp = UserResp{}
-	DB.Table("(?) as u , (?) as r", subquery1, subquery2).Find(&userresp)
-	return &userresp.User, userresp.isFollow
-}
-
 func ExistUser(id uint) bool {
 	count := int64(0)
 	DB.Table("user").Where("id=? ", id).Count(&count)
 	return count > 0
+}
+
+func GetAllUserIds() ([]uint, error) {
+	var ids []uint
+	err := DB.Table("user").Select("id").Find(&ids).Error
+	return ids, err
 }

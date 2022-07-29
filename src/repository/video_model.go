@@ -89,3 +89,8 @@ func ExistVideo(id uint) bool {
 	DB.Table("video").Where("id=? ", id).Count(&count)
 	return count > 0
 }
+func GetAllVideoIds() ([]uint, error) {
+	var ids []uint
+	err := DB.Table("video").Select("id").Find(&ids).Error
+	return ids, err
+}
