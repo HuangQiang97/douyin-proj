@@ -84,7 +84,7 @@ func GetVideoIdsTimeDesc(lastTime int64) ([]int, error) {
 	return ids, err
 }
 
-func ExistVideo(id *uint) bool {
+func ExistVideo(id uint) bool {
 	count := int64(0)
 	DB.Table("video").Where("id=? ", id).Count(&count)
 	return count > 0

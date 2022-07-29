@@ -22,6 +22,10 @@ func encryptPassword(password string) string {
 
 // CreateUser 创建用户
 func CreateUser(username, password string) (uint, error) {
+	// 数据校验
+	if _, err := repository.GetUserByName(username); err == nil {
+		return 0, errors.New("用户已存在")
+	}
 	p := encryptPassword(password)
 	var user = &repository.User{
 		UserName: username,
@@ -50,6 +54,10 @@ func CheckUser(username, password string) (uint, error) {
 
 // GetUserInfo 获取用户信息
 func GetUserInfo(targetId uint, currId uint) (responseUser *types.User, err error) {
+	// 数据校验
+	if !repository.ExistUser(targetId) {
+		return nil, errors.New("用户不存在")
+	}
 	// 基本信息
 	basicUser, err := repository.GetUserById(targetId)
 	if err != nil {

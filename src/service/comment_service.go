@@ -12,6 +12,10 @@ import (
 
 // CreateComment 创建用户评论
 func CreateComment(userId uint, videoId uint, content string) (*types.Comment, error) {
+	// 数据校验
+	if !repository.ExistVideo(videoId) {
+		return nil, errors.New("视频不存在")
+	}
 	// 创建评论
 	var comment = repository.Comment{
 		UserID:     userId,
@@ -48,6 +52,12 @@ func CreateComment(userId uint, videoId uint, content string) (*types.Comment, e
 
 // DeleteCommentById 根据评论ID删除评论
 func DeleteCommentById(userId uint, videoId uint, commentId uint) (*types.User, error) {
+	// 数据校验
+	comment, _ := repository.GetCommentById(commentId)
+	if comment == nil || comment.UserID != userId || comment.VideoID != videoId {
+		return nil, errors.New("userId+videoId+commentId不合法")
+	}
+
 	// 删除评论
 	err := repository.DeleteComment(userId, videoId, commentId)
 	if err != nil {
@@ -65,7 +75,7 @@ func DeleteCommentById(userId uint, videoId uint, commentId uint) (*types.User, 
 // GetCommentByVideoId 时间倒叙获取视频评论
 func GetCommentByVideoId(videoId uint, userId uint) ([]types.Comment, error) {
 	// 合法性判断
-	if !repository.ExistVideo(&videoId) {
+	if !repository.ExistVideo(videoId) {
 		return nil, errors.New("视频不存在")
 	}
 	// 获取评论Id

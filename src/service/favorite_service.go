@@ -11,6 +11,14 @@ import (
 
 // AddFavorite 添加点赞
 func AddFavorite(userId uint, videoId uint) error {
+	// 数据校验
+	if !repository.ExistVideo(videoId) {
+		return errors.New("视频不存在")
+	}
+	if repository.ExistFavorite(userId, videoId) {
+		return errors.New("已经点过赞")
+	}
+
 	// 添加点赞记录到数据库
 	if err := repository.InsertFavorite(&repository.Favorite{UserID: userId, VideoID: videoId}); err != nil {
 		return err
@@ -35,6 +43,14 @@ func AddFavorite(userId uint, videoId uint) error {
 
 //UndoFavorite 取消点赞
 func UndoFavorite(userId uint, videoId uint) error {
+	// 数据校验
+	if !repository.ExistVideo(videoId) {
+		return errors.New("视频不存在")
+	}
+	if !repository.ExistFavorite(userId, videoId) {
+		return errors.New("点赞记录不存在")
+	}
+
 	// 删除点赞数据库记录
 	if err := repository.DeleteFavorite(&repository.Favorite{UserID: userId, VideoID: videoId}); err != nil {
 		return err

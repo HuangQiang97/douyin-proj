@@ -36,7 +36,7 @@ func SaveFile(file *multipart.FileHeader, dst string) error {
 // isVideo 判断文件是否是视频
 func isVideo(suffix string) bool {
 	videoTypes := []string{"avi", "wmv", "mpeg", "mp4", "m4v", "mov", "asf", "flv", "f4v", "rmvb", "rm", "3gp", "vob", "asx", "dat", "mkv", "webm", "3g2", "mpg", "mpe", "ts", "vob", "dat", "mkv", "lavf", "cpk", "dirac", "ram", "qt", "fli", "flc", "mod", "wmv", "avi", "dat", "asf", "mpeg", "mpg", " rm", "rmvb", "ram", "flv", "mp4", "3gp", " mov", "divx", "dv", "vob", "mkv", "qt", " cpk", "fli", "flc", "f4v", "m4v"}
-	set := make(map[string]struct{},len(videoTypes))
+	set := make(map[string]struct{}, len(videoTypes))
 	for _, v := range videoTypes {
 		set[v] = struct{}{}
 	}
@@ -89,6 +89,11 @@ func SaveVideo(file *multipart.FileHeader, userId uint, title string) (err error
 
 // GetVideoList 获得用户视频列表
 func GetVideoList(authorId, currId uint) (videoList []types.Video, err error) {
+	// 数据校验
+	if !repository.ExistUser(authorId) {
+		return nil, errors.New("用户不存在")
+	}
+
 	// 获取用户发布视频列表
 	var videoIds []uint
 	// 尝试从缓存获取

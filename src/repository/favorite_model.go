@@ -88,3 +88,8 @@ func GetVideoFavoriteCount(videoId uint) int64 {
 	DB.Table("favorite").Where(" video_id=?", videoId).Count(&count)
 	return count
 }
+func ExistFavorite(userId, videoId uint) bool {
+	count := int64(0)
+	DB.Table("favorite").Where("video_id=? and user_id=?", videoId, userId).Count(&count)
+	return count > 0
+}

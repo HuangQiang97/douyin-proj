@@ -44,7 +44,7 @@ func CommentAction(c *gin.Context) {
 		comment, err := service.CreateComment(userId, commentRequest.VideoId, commentRequest.CommentText)
 		if err != nil {
 			c.JSON(http.StatusOK, types.CommentResponse{
-				Response: config.CommentAddFailedResp,
+				Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 			})
 			return
 		}
@@ -58,7 +58,7 @@ func CommentAction(c *gin.Context) {
 		user, err := service.DeleteCommentById(userId, commentRequest.VideoId, commentRequest.CommentId)
 		if err != nil {
 			c.JSON(http.StatusOK, types.CommentResponse{
-				Response: config.CommentDeleteFailedResp,
+				Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 			})
 			return
 		}

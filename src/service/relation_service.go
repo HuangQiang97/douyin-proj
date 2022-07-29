@@ -11,6 +11,17 @@ import (
 
 // CreateRelation 添加关注
 func CreateRelation(userId, followId uint) error {
+	// 数据校验
+	if userId == followId {
+		return errors.New("不能关注自己")
+	}
+	if !repository.ExistUser(followId) {
+		return errors.New("目标用户不存在")
+	}
+	if repository.GetRelation(&repository.Relation{UserID: userId, FollowID: followId}) {
+		return errors.New("重复关注")
+	}
+
 	// 添加关注到数据库
 	if err := repository.CreateRelationWithCount(userId, followId); err != nil {
 		return err
@@ -32,6 +43,13 @@ func CreateRelation(userId, followId uint) error {
 
 // DeleteRelation 取消关注
 func DeleteRelation(userId, followId uint) error {
+	// 数据校验
+	if !repository.ExistUser(followId) {
+		return errors.New("目标用户不存在")
+	}
+	if !repository.GetRelation(&repository.Relation{UserID: userId, FollowID: followId}) {
+		return errors.New("关注不存在")
+	}
 	// 删除数据库中关注信息
 	if err := repository.DeleteRelationWithCount(userId, followId); err != nil {
 		return err

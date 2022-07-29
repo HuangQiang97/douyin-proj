@@ -34,7 +34,7 @@ func FavoriteAction(c *gin.Context) {
 	case 1: // do favorite
 		if err := service.AddFavorite(uId, favoriteRequest.VideoId); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
-				Response: config.DuplicateFavoriteResp,
+				Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 			})
 			return
 		}
@@ -42,7 +42,7 @@ func FavoriteAction(c *gin.Context) {
 	case 2: // undo favorite
 		if err := service.UndoFavorite(uId, favoriteRequest.VideoId); err != nil {
 			c.JSON(http.StatusOK, types.FavoriteResponse{
-				Response: config.NotInFavoriteResp,
+				Response: types.Response{StatusCode: config.ParamInvalid, StatusMsg: err.Error()},
 			})
 			return
 		}
