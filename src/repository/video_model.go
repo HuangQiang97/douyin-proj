@@ -1,5 +1,6 @@
 package repository
 
+// Video 数据模型
 type Video struct {
 	ID            uint `gorm:"primarykey"`
 	AuthorID      uint
@@ -20,10 +21,12 @@ func (v *Video) TableName() string {
 	return "video"
 }
 
+// CreateVideo 创建视频
 func CreateVideo(video *Video) error {
 	return DB.Create(video).Error
 }
 
+// GetVideoById 根据ID获得视频
 func GetVideoById(id uint) (*Video, error) {
 	video := Video{}
 	if err := DB.First(&video, id).Error; err != nil {
@@ -32,23 +35,7 @@ func GetVideoById(id uint) (*Video, error) {
 	return &video, nil
 }
 
-func GetVideosByIds(ids []uint) ([]Video, error) {
-	var videos []Video
-	if err := DB.Find(&videos, ids).Error; err != nil {
-		return nil, err
-	}
-	return videos, nil
-}
-
-func GetVideoByAuthorId(authorId uint) ([]Video, error) {
-	var videos []Video
-	err := DB.Table("video").Where("author_id = ?", authorId).Find(&videos).Error
-	if err != nil {
-		return nil, err
-	}
-	return videos, nil
-}
-
+// GetVideoIdsByAuthorId 获取用户发布的全部视频
 func GetVideoIdsByAuthorId(authorId uint) ([]uint, error) {
 	var ids []uint
 	err := DB.Table("video").Where("author_id = ?", authorId).Select("id").Find(&ids).Error
@@ -58,19 +45,6 @@ func GetVideoIdsByAuthorId(authorId uint) ([]uint, error) {
 	return ids, nil
 }
 
-func GetVideoByAuthorIdWithFavorite(authorId uint, id uint) []VideoResp {
-	var videolist []VideoResp
-	subquery := DB.Table("favorite").Where("user_id = ? AND video_id = video.id", id).Select("count(1)")
-	//DB.Table("video").Where("author_id = ?", authorId).Select("*,(?) as is_favorite", subquery).Find(&videolist)
-	rows, _ := DB.Table("video").Where("author_id = ?", authorId).Select("*,(?) as is_favorite", subquery).Rows()
-	for rows.Next() {
-		v := VideoResp{}
-		rows.Scan(&v.ID, &v.AuthorID, &v.PlayUrl, &v.CoverUrl, &v.FavoriteCount, &v.CommentCount, &v.Title, &v.CreatedAt, &v.isFavorite)
-		videolist = append(videolist, v)
-	}
-	return videolist
-}
-
 // GetVideoTimeDesc 倒叙时间获得视频
 func GetVideoTimeDesc(lastTime int64) ([]Video, error) {
 	var videoList []Video
@@ -78,17 +52,21 @@ func GetVideoTimeDesc(lastTime int64) ([]Video, error) {
 	return videoList, err
 }
 
+// GetVideoIdsTimeDesc 根据实践倒叙获得视频ID
 func GetVideoIdsTimeDesc(lastTime int64) ([]int, error) {
 	var ids []int
 	err := DB.Table("video").Where("created_at < ? ", lastTime).Order("created_at DESC").Limit(30).Select("id").Find(&ids).Error
 	return ids, err
 }
 
+// ExistVideo 判断视频是否存在
 func ExistVideo(id uint) bool {
 	count := int64(0)
 	DB.Table("video").Where("id=? ", id).Count(&count)
 	return count > 0
 }
+
+// GetAllVideoIds 获得全部视频ID
 func GetAllVideoIds() ([]uint, error) {
 	var ids []uint
 	err := DB.Table("video").Select("id").Find(&ids).Error

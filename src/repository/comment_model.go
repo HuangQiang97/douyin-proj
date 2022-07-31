@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// Comment 数据模型
 type Comment struct {
 	ID         uint `gorm:"primarykey"`
 	UserID     uint

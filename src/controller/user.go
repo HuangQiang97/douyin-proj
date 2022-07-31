@@ -100,6 +100,7 @@ func Login(c *gin.Context) {
 	log.Printf("用户登录成功。uid:%d\n", id)
 }
 
+// UserInfo 获取用户信息
 func UserInfo(c *gin.Context) {
 	var userInfoRequest = types.UserInfoRequest{}
 	if err := c.ShouldBind(&userInfoRequest); err != nil {

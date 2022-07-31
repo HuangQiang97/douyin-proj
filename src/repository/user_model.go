@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User 数据模型
 type User struct {
 	ID          uint   `gorm:"primarykey"`
 	UserName    string `json:"user_name" gorm:"unique"`
@@ -28,6 +29,7 @@ func CreateUser(user *User) error {
 	return DB.Create(user).Error
 }
 
+// GetUserById 根据ID获得用户
 func GetUserById(id uint) (*User, error) {
 	user := User{}
 	if err := DB.First(&user, id).Error; err != nil {
@@ -36,14 +38,7 @@ func GetUserById(id uint) (*User, error) {
 	return &user, nil
 }
 
-func GetUsersByIds(ids []uint) ([]User, error) {
-	var users []User
-	if err := DB.Find(&users, ids).Error; err != nil {
-		return nil, err
-	}
-	return users, nil
-}
-
+// GetUserByName 根据用户名获得用户
 func GetUserByName(username string) (*User, error) {
 	var user = User{}
 	db := DB.Session(&gorm.Session{}).Where("user_name=?", username).Find(&user)
@@ -56,12 +51,14 @@ func GetUserByName(username string) (*User, error) {
 	return &user, nil
 }
 
+// ExistUser 判断ID指向用户是否存在
 func ExistUser(id uint) bool {
 	count := int64(0)
 	DB.Table("user").Where("id=? ", id).Count(&count)
 	return count > 0
 }
 
+// GetAllUserIds 获得全部用户ID
 func GetAllUserIds() ([]uint, error) {
 	var ids []uint
 	err := DB.Table("user").Select("id").Find(&ids).Error

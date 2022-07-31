@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Run 启动服务路由
 func Run(httpServer *gin.Engine) {
 	// 设置日志格式,默认已经使用了
 	//httpServer.Use(gin.Logger())
@@ -21,6 +22,7 @@ func Run(httpServer *gin.Engine) {
 	}
 }
 
+// initRouter 初始化路由
 func initRouter(r *gin.Engine) {
 	// public directory is used to serve static resources
 	r.Static("/upload", "./upload")

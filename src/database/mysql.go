@@ -12,6 +12,7 @@ import (
 
 var MySQLDb *gorm.DB
 
+// initMySQL 初始化mysql
 func initMySQL() error {
 	//dsn := "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=%s&loc=%s",

@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// Favorite 数据模型
 type Favorite struct {
 	UserID  uint `gorm:"primarykey"`
 	VideoID uint `gorm:"primarykey"`
@@ -88,6 +89,8 @@ func GetVideoFavoriteCount(videoId uint) int64 {
 	DB.Table("favorite").Where(" video_id=?", videoId).Count(&count)
 	return count
 }
+
+// ExistFavorite 判断是否存在点赞关系
 func ExistFavorite(userId, videoId uint) bool {
 	count := int64(0)
 	DB.Table("favorite").Where("video_id=? and user_id=?", videoId, userId).Count(&count)

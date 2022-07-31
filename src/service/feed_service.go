@@ -15,6 +15,7 @@ type RateIdPair struct {
 	id   uint
 }
 
+// RateIdPairs 用于根据评分排序获得视频ID
 type RateIdPairs []RateIdPair
 
 func (s RateIdPairs) Len() int {
@@ -81,7 +82,9 @@ func GetFeedVideosWithRecommendation(lastTime int64, isAuth bool, userId uint) (
 	return feedVideos, nextTime, nil
 }
 
-//recommendation 协同过滤推荐算法
+// recommendation 协同过滤推荐算法
+// https://www.jianshu.com/p/5463ab162a58
+// https://zhuanlan.zhihu.com/p/80069337
 func cfRecommendation(targetUserId uint) []uint {
 	// 全部用户与视频
 	allUserIds, _ := repository.GetAllUserIds()

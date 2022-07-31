@@ -6,6 +6,7 @@ import (
 	"log"
 )
 
+// Relation 数据模型
 type Relation struct {
 	UserID   uint `gorm:"primarykey"`
 	FollowID uint `gorm:"primarykey"`
@@ -14,10 +15,6 @@ type Relation struct {
 func (r *Relation) TableName() string {
 	return "relation"
 }
-
-//func CreateRelation(r *Relation) error {
-//	return DB.Create(r).Error
-//}
 
 // GetRelation 是否存在关注关系
 func GetRelation(r *Relation) bool {
@@ -101,12 +98,14 @@ func GetFollowingList(userId uint) ([]User, error) {
 	return users, err
 }
 
+// GetFollowingIds 获得关注的用户ID
 func GetFollowingIds(userId uint) ([]uint, error) {
 	var ids []uint
 	err := DB.Table("relation").Where("user_id=?", userId).Select("follow_id").Find(&ids).Error
 	return ids, err
 }
 
+// GetFollowerIds 获得粉丝ID
 func GetFollowerIds(userId uint) ([]uint, error) {
 	var ids []uint
 	err := DB.Table("relation").Where("follow_id=?", userId).Select("user_id").Find(&ids).Error
