@@ -48,11 +48,3 @@ salt = *********
 * ffmpeg依赖: https://ffbinaries.com/downloads ,根据系统下载对应的ffmpeg二进制文件(只需要ffmpeg，不需要ffprobe,ffplay,ffserver)，并放入GoPath的`bin`目录下。
 * IP地址: 校园网只能使用内网地址，外网地址无法访问，可手动指定IP。
 
-ftp配置：https://www.jianshu.com/p/c84f6e6de002
-
-docker run -d -p 20:20 -p 21:21 -p 21100-21110:21100-21110 -v /Ftpfile:/home/vsftpd -e FTP_USER=root -e FTP_PASS=huangqiang -e PASV_ADDRESS=10.192.14.163 -e PASV_MIN_PORT=21100 -e PASV_MAX_PORT=21110 --name vsftpd --restart=always fauria/vsftpd
-
-作者：Ricsy
-链接：https://www.jianshu.com/p/c84f6e6de002
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

@@ -22,7 +22,7 @@ func Publish(c *gin.Context) {
 	// 校验jwt token
 	userId, err := middleware.VerifyToken(publishRequest.Token)
 	if err != nil {
-		log.Printf("登录失败，err:%s\n", err)
+		log.Printf("登录失败,err:%s\n", err)
 		c.JSON(http.StatusOK, types.UserResponse{
 			Response: config.AuthFailedResp,
 		})
