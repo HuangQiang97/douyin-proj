@@ -1,3 +1,5 @@
+create database  douyin;
+use douyin;
 -- user
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`

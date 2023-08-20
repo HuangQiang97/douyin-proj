@@ -24,6 +24,7 @@ func SaveFile(file *multipart.FileHeader, dst string) error {
 		return err
 	}
 	defer src.Close()
+
 	out, err := os.Create(dst)
 	if err != nil {
 		return err
@@ -31,6 +32,52 @@ func SaveFile(file *multipart.FileHeader, dst string) error {
 	defer out.Close()
 	_, err = io.Copy(out, src)
 	return err
+}
+
+// SaveFile 保存文件
+func SaveHead(file *multipart.FileHeader, dst string) (multipart.File, *os.File, error) {
+	src, err := file.Open()
+	if err != nil {
+		return nil, nil, err
+	}
+	//defer src.Close()
+
+	out, err := os.Create(dst)
+	if err != nil {
+		return nil, nil, err
+	}
+	//defer out.Close()
+
+	buffer := make([]byte, 4*1024*1024)
+	n, err := src.Read(buffer)
+	if err != nil && err != io.EOF {
+		return nil, nil, err
+	}
+
+	_, err = out.Write(buffer[:n])
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return src, out, err
+}
+
+// SaveFile 保存文件
+func SaveTail(src multipart.File, out *os.File) error {
+	_, err := io.Copy(out, src)
+	if err != nil {
+		return err
+	}
+	err = src.Close()
+	if err != nil {
+		return err
+	}
+	err = out.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
 
 // isVideo 判断文件是否是视频
@@ -55,10 +102,18 @@ func SaveVideo(file *multipart.FileHeader, userId uint, title string) (err error
 	videoName := uuid.NewV4().String() + path.Ext(file.Filename)
 	videoPath := config.VideoSavePrefix + videoName
 	//保存视频
-	if err = SaveFile(file, videoPath); err != nil {
-		log.Printf("保存文件失败。path:%s,err:%s\n", videoPath, err)
+
+	//if err = SaveFile(file, videoPath); err != nil {
+	//	log.Printf("保存文件失败。path:%s,err:%s\n", videoPath, err)
+	//	return err
+	//}
+
+	src, out, err := SaveHead(file, videoPath)
+	if err != nil {
+		log.Printf("保存文件头失败。path:%s,err:%s\n", videoPath, err)
 		return err
 	}
+
 	//生成视频文件名防止注入
 	imageName := uuid.NewV4().String() + ".png"
 	//向队列中添加生成截屏任务
@@ -66,6 +121,11 @@ func SaveVideo(file *multipart.FileHeader, userId uint, title string) (err error
 		VideoName: videoName,
 		ImageName: imageName,
 	}
+	if err = SaveTail(src, out); err != nil {
+		log.Printf("保存文件尾失败。path:%s,err:%s\n", videoPath, err)
+		return err
+	}
+
 	// 保存视频数据到数据库
 	video := repository.Video{
 		AuthorID:      userId,

@@ -19,7 +19,6 @@ func main() {
 	}()
 	r := gin.Default()
 	server.Run(r)
-
 }
 
 func Init() error {

@@ -44,6 +44,7 @@ func InsertFavorite(f *Favorite) error {
 
 // DeleteFavorite 删除点赞记录，并更新视频点赞数
 func DeleteFavorite(f *Favorite) error {
+
 	return DB.Transaction(func(tx *gorm.DB) error {
 		db := tx.Delete(f)
 		if err := db.Error; err != nil {
